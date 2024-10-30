@@ -1,0 +1,1 @@
+export { getPatternKey } from "./pattenKey";

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { updatePattern } from "@/entities/pattern";
+import { useAppDispatch } from "@/shared/model";
 import { beadSizes } from "../../config/beadSizes";
 
 interface BeadSquare {
@@ -6,17 +7,24 @@ interface BeadSquare {
   column: number;
   colorClick: string;
   odd?: boolean;
+  patternColor?: string;
 }
 
 const width = beadSizes.square.width;
 const height = beadSizes.square.height;
 
 export const BeadSquare = (props: BeadSquare) => {
-  const [color, setColor] = useState("transparent");
-  const { row, column, odd, colorClick } = props;
+  const { row, column, odd, colorClick, patternColor = "transparent" } = props;
+  const dispatch = useAppDispatch();
 
   const handleClick = () => {
-    setColor(colorClick);
+    dispatch(
+      updatePattern({
+        x: row,
+        y: column,
+        color: colorClick,
+      })
+    );
   };
   return (
     <rect
@@ -26,7 +34,7 @@ export const BeadSquare = (props: BeadSquare) => {
       height={height}
       rx="5"
       stroke="#000"
-      fill={color}
+      fill={patternColor}
       onClick={handleClick}
     />
   );

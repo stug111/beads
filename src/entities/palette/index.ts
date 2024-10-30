@@ -1,1 +1,7 @@
-export { paletteSlice } from "./model/slice";
+export {
+  paletteSlice,
+  saveColor,
+  updateSelectedColor,
+  selectSavedList,
+  selectSelectedColor,
+} from "./model/slice";

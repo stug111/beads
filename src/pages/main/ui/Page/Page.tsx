@@ -10,6 +10,7 @@ import { selectSelectedColor } from "@/entities/palette";
 import { selectPattern } from "@/entities/pattern";
 import { selectSize } from "@/entities/settings";
 import { useAppSelector } from "@/shared/model";
+import * as styles from "./Page.css";
 import { BeadsSvg } from "@/components/BeadsSvg/BeadsSvg";
 
 export const MainPage = () => {
@@ -22,10 +23,17 @@ export const MainPage = () => {
     <div>
       <ChangeSize type="rows" />
       <ChangeSize type="columns" />
-      <ColorPicker />
-      <AddPaletteColor />
-      <ClearPattern />
-      <SavedColorList />
+      <div className={styles.container}>
+        <div>
+          <ColorPicker />
+          <AddPaletteColor />
+          <ClearPattern />
+        </div>
+        <div>
+          <SavedColorList />
+        </div>
+      </div>
+
       <div>
         <BeadsSvg
           ref={svg}

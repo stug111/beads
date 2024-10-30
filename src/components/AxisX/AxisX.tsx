@@ -1,4 +1,4 @@
-import { beadSizes } from "../../config/beadSizes";
+import { beadSizes } from "@/shared/config";
 
 interface AxisXProps {
   size: number;

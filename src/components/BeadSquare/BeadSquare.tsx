@@ -1,6 +1,6 @@
 import { updatePattern } from "@/entities/pattern";
+import { beadSizes } from "@/shared/config";
 import { useAppDispatch } from "@/shared/model";
-import { beadSizes } from "../../config/beadSizes";
 
 interface BeadSquare {
   row: number;

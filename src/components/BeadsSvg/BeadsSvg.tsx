@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
+import { beadSizes } from "@/shared/config";
 import { getPatternKey } from "@/shared/lib";
 import type { Pattern } from "@/shared/types";
-import { beadSizes } from "../../config/beadSizes";
 import { AxisX } from "../AxisX/AxisX";
 import { AxisY } from "../AxisY/AxisY";
 import { BeadSquare } from "../BeadSquare/BeadSquare";

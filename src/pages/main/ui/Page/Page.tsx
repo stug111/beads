@@ -1,22 +1,14 @@
-import { useRef, useState, type ChangeEvent } from "react";
+import { useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
+import { ChangeSize } from "@/features/settings";
+import { selectSize } from "@/entities/settings";
+import { useAppSelector } from "@/shared/model";
 import { BeadsSvg } from "@/components/BeadsSvg/BeadsSvg";
 
 export const MainPage = () => {
   const svg = useRef<SVGSVGElement>(null);
   const [color, setColor] = useState("#000000");
-  const [size, setSize] = useState({
-    countColumns: 36,
-    countRows: 9,
-  });
-
-  const handleChangeSize =
-    (type: keyof typeof size) => (e: ChangeEvent<HTMLInputElement>) => {
-      setSize((prev) => ({
-        ...prev,
-        [type]: Number(e.target.value),
-      }));
-    };
+  const size = useAppSelector(selectSize);
 
   const handleDownload = () => {
     const svgRef = svg.current;
@@ -39,20 +31,8 @@ export const MainPage = () => {
 
   return (
     <div>
-      <fieldset>
-        <label>Кол-во строк</label>
-        <input
-          value={size.countRows}
-          onChange={handleChangeSize("countRows")}
-        />
-      </fieldset>
-      <fieldset>
-        <label>Кол-во колонок</label>
-        <input
-          value={size.countColumns}
-          onChange={handleChangeSize("countColumns")}
-        />
-      </fieldset>
+      <ChangeSize type="rows" />
+      <ChangeSize type="columns" />
       <HexColorPicker color={color} onChange={setColor} />
       <button type="button" onClick={handleDownload}>
         Download
@@ -60,8 +40,8 @@ export const MainPage = () => {
       <div>
         <BeadsSvg
           ref={svg}
-          row={size.countRows}
-          column={size.countColumns}
+          row={size.rows}
+          column={size.columns}
           colorClick={color}
         />
       </div>

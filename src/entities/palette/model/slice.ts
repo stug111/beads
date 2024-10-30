@@ -7,7 +7,7 @@ interface PaletteSliceState {
 }
 
 const initialState: PaletteSliceState = {
-  savedList: [],
+  savedList: ["#cdb4db", "#ffc8dd", "#ffafcc", "#bde0fe", "#a2d2ff"],
   selectedColor: "#000000",
   eraser: false,
 };
@@ -17,7 +17,9 @@ export const paletteSlice = createSlice({
   initialState,
   reducers: {
     saveColor: (state, action: PayloadAction<string>) => {
-      state.savedList.push(action.payload);
+      if (state.savedList.includes(action.payload)) {
+        state.savedList.push(action.payload);
+      }
     },
     updateSelectedColor: (state, action: PayloadAction<string>) => {
       state.selectedColor = action.payload;

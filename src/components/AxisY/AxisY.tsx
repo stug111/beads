@@ -10,6 +10,7 @@ export const AxisY = (props: AxisYProps) => {
     <g>
       {[...Array(size).keys()].map((i) => (
         <text
+          key={`axis-y-${i}`}
           x={beadSizes.square.width / 2}
           y={i * beadSizes.square.height + beadSizes.square.height / 2 + 25}
           textAnchor="middle"

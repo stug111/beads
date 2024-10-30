@@ -1,15 +1,13 @@
 import { useRef, useState, type ChangeEvent } from "react";
-
-import "./App.css";
-import { BeadsSvg } from "./components/BeadsSvg/BeadsSvg";
 import { HexColorPicker } from "react-colorful";
+import { BeadsSvg } from "@/components/BeadsSvg/BeadsSvg";
 
-function App() {
+export const MainPage = () => {
   const svg = useRef<SVGSVGElement>(null);
   const [color, setColor] = useState("#000000");
   const [size, setSize] = useState({
-    countColumns: 30,
-    countRows: 20,
+    countColumns: 36,
+    countRows: 9,
   });
 
   const handleChangeSize =
@@ -69,6 +67,4 @@ function App() {
       </div>
     </div>
   );
-}
-
-export default App;
+};

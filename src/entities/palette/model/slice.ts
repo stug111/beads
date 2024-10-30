@@ -17,7 +17,7 @@ export const paletteSlice = createSlice({
   initialState,
   reducers: {
     saveColor: (state, action: PayloadAction<string>) => {
-      if (state.savedList.includes(action.payload)) {
+      if (!state.savedList.includes(action.payload)) {
         state.savedList.push(action.payload);
       }
     },

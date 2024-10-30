@@ -1,12 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+import storage from "redux-persist-indexeddb-storage";
 import { rootReducer } from "./rootReducer";
 
 const persistConfig = {
   key: "beads",
   version: 1,
-  storage,
+  storage: storage("beadsDB"),
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -70,15 +70,15 @@ export const BeadsSvg = forwardRef<SVGSVGElement, BeadsSvg>((props, ref) => {
       >
         <line
           onDragStart={console.log}
-          x1="0"
+          x1="20"
           y1="0"
-          x2="0"
+          x2="20"
           strokeWidth={4}
           y2={viewBoxHeight}
           stroke="red"
           strokeOpacity={0.6}
         />
-        <circle cx="0" cy="16" r="16" fill="#DADADA" />
+        <circle cx="20" cy="16" r="16" fill="#DADADA" />
       </motion.g>
     </motion.svg>
   );

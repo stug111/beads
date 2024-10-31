@@ -37,6 +37,7 @@ export const BeadSquare = (props: BeadSquareProps) => {
       stroke={"#000"}
       strokeWidth={1}
       onClick={handleClick}
+      onTap={handleClick}
       fill={patternColor}
       cornerRadius={5}
     />

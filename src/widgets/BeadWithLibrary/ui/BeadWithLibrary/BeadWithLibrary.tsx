@@ -1,7 +1,8 @@
-import { useRef } from "react";
+import type { Stage as StageInstance } from "konva/lib/Stage";
+import { useEffect, useRef } from "react";
 import { Layer, Stage } from "react-konva";
 import { beadSizes } from "@/shared/config";
-// import { useScale } from "@/shared/hooks";
+import { useWindowSize } from "@/shared/hooks";
 import { getPatternKey } from "@/shared/lib";
 import type { Pattern } from "@/shared/types";
 import { BeadSquare } from "../BeadSquare/BeadSquare";
@@ -14,35 +15,48 @@ interface BeadWithLibraryProps {
 }
 
 export const BeadWithLibrary = (props: BeadWithLibraryProps) => {
-  const stageRef = useRef<HTMLDivElement>(null);
+  const refStage = useRef<StageInstance>(null);
+  const { width } = useWindowSize();
   const { rows, columns, colorClick, pattern } = props;
-  //   const scale = useScale(stageRef.current);
   const viewBoxHeight = beadSizes.square.height * rows;
+  const viewBoxWidth =
+    beadSizes.square.width * columns + beadSizes.square.width / 2;
+
+  useEffect(() => {
+    const refCurrent = refStage.current;
+
+    if (refCurrent) {
+      if (width < viewBoxWidth) {
+        const scale = width / viewBoxWidth;
+
+        if (scale) {
+          refCurrent.scale({ x: scale, y: scale });
+        }
+      }
+    }
+  }, [viewBoxWidth, width]);
 
   return (
-    <div ref={stageRef}>
-      <Stage width={500} height={viewBoxHeight}>
-        <Layer>
-          {[...Array(rows).keys()].map((_, indexRow) => {
-            return [...Array(columns).keys()].map((_, indexColumn) => {
-              const isOdd = indexRow % 2 === 1;
-              const patternColor =
-                pattern[getPatternKey(indexRow, indexColumn)];
+    <Stage ref={refStage} width={width} height={viewBoxHeight}>
+      <Layer>
+        {[...Array(rows).keys()].map((_, indexRow) => {
+          return [...Array(columns).keys()].map((_, indexColumn) => {
+            const isOdd = indexRow % 2 === 1;
+            const patternColor = pattern[getPatternKey(indexRow, indexColumn)];
 
-              return (
-                <BeadSquare
-                  key={`${indexRow}-${indexColumn}`}
-                  column={indexColumn}
-                  row={indexRow}
-                  odd={isOdd}
-                  colorClick={colorClick}
-                  patternColor={patternColor?.color}
-                />
-              );
-            });
-          })}
-        </Layer>
-      </Stage>
-    </div>
+            return (
+              <BeadSquare
+                key={`${indexRow}-${indexColumn}`}
+                column={indexColumn}
+                row={indexRow}
+                odd={isOdd}
+                colorClick={colorClick}
+                patternColor={patternColor?.color}
+              />
+            );
+          });
+        })}
+      </Layer>
+    </Stage>
   );
 };

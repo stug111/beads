@@ -6,6 +6,7 @@ import { AxisX } from "../AxisX/AxisX";
 import { AxisY } from "../AxisY/AxisY";
 import { BeadSquare } from "../BeadSquare/BeadSquare";
 import { Rule } from "../Rule/Rule";
+import * as styles from "./BeadsSvg.css";
 
 interface BeadsSvg {
   row: number;
@@ -29,6 +30,7 @@ export const BeadsSvg = forwardRef<SVGSVGElement, BeadsSvg>((props, ref) => {
       height={viewBoxHeight}
       width="100%"
       preserveAspectRatio="xMidYMid"
+      className={styles.root}
     >
       <g transform={`translate(40, 60)`}>
         {[...Array(row).keys()].map((_, indexRow) => {

@@ -24,10 +24,6 @@ export const BeadWithLibrary = (props: BeadWithLibraryProps) => {
       <Stage
         width={document.documentElement.clientWidth}
         height={viewBoxHeight}
-        scale={{
-          x: 0.6,
-          y: 0.6,
-        }}
       >
         <Layer>
           {[...Array(rows).keys()].map((_, indexRow) => {

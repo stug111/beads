@@ -20,11 +20,6 @@ export const settingsSlice = createSlice({
   },
 });
 
-export const selectSize = (state: RootState) => {
-  return {
-    rows: state.settings.rows,
-    columns: state.settings.columns,
-  };
-};
+export const selectSize = (state: RootState) => state.settings;
 
 export const { changeSize } = settingsSlice.actions;

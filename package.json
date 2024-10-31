@@ -16,6 +16,7 @@
     "react-colorful": "^5.6.1",
     "react-dom": "^18.3.1",
     "react-draggable": "^4.4.6",
+    "react-konva": "^18.2.10",
     "react-redux": "^9.1.2",
     "redux-persist": "^6.0.0",
     "redux-persist-indexeddb-storage": "^1.0.4"

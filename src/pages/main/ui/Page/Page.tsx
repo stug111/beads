@@ -1,4 +1,5 @@
-import { useRef } from "react";
+// import { useRef } from "react";
+import { BeadWithLibrary } from "@/widgets/BeadWithLibrary";
 import {
   AddPaletteColor,
   ColorPicker,
@@ -11,10 +12,10 @@ import { selectPattern } from "@/entities/pattern";
 import { selectSize } from "@/entities/settings";
 import { useAppSelector } from "@/shared/model";
 import * as styles from "./Page.css";
-import { BeadsSvg } from "@/components/BeadsSvg/BeadsSvg";
+// import { BeadsSvg } from "@/components/BeadsSvg/BeadsSvg";
 
 export const MainPage = () => {
-  const svg = useRef<SVGSVGElement>(null);
+  // const svg = useRef<SVGSVGElement>(null);
   const size = useAppSelector(selectSize);
   const color = useAppSelector(selectSelectedColor);
   const pattern = useAppSelector(selectPattern);
@@ -35,13 +36,24 @@ export const MainPage = () => {
       </div>
 
       <div>
-        <BeadsSvg
+        <BeadWithLibrary
+          rows={size.rows}
+          columns={size.columns}
+          colorClick={color}
+          pattern={pattern}
+        />
+        {/* <BeadTemplate
+          rows={size.rows}
+          columns={size.columns}
+          colorClick={color}
+        /> */}
+        {/* <BeadsSvg
           ref={svg}
           row={size.rows}
           column={size.columns}
           colorClick={color}
           pattern={pattern}
-        />
+        /> */}
       </div>
     </div>
   );

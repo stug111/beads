@@ -5,22 +5,20 @@ import { beadSizes } from "@/shared/config";
 import { useWindowSize } from "@/shared/hooks";
 import { getPatternKey } from "@/shared/lib";
 import type { Pattern } from "@/shared/types";
+import { axisXHeight, axisYWidth } from "../../config/elementSize";
 import { AxisX } from "../AxisX/AxisX";
 import { AxisY } from "../AxisY/AxisY";
 import { BeadSquare } from "../BeadSquare/BeadSquare";
 import { Rule } from "../Rule/Rule";
 
-interface BeadWithLibraryProps {
+interface BeadStageProps {
   rows: number;
   columns: number;
   colorClick: string;
   pattern: Record<string, Pattern>;
 }
 
-const axisXHeight = 30;
-const axisYWidth = 20;
-
-export const BeadWithLibrary = (props: BeadWithLibraryProps) => {
+export const BeadStage = (props: BeadStageProps) => {
   const refStage = useRef<StageInstance>(null);
   const { width } = useWindowSize();
   const { rows, columns, colorClick, pattern } = props;
@@ -81,7 +79,11 @@ export const BeadWithLibrary = (props: BeadWithLibraryProps) => {
               <AxisY size={rows} />
             </Group>
             <Group x={axisYWidth}>
-              <Rule viewBoxHeight={viewBoxHeight} viewBoxWidth={viewBoxWidth} />
+              <Rule
+                refStage={refStage}
+                viewBoxHeight={viewBoxHeight}
+                viewBoxWidth={viewBoxWidth}
+              />
             </Group>
           </Group>
         </Group>

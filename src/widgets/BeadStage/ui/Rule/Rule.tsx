@@ -63,7 +63,7 @@ export const Rule = (props: RuleProps) => {
       <Line
         points={[0, 0, 0, viewBoxHeight]}
         width={20}
-        stroke={"red"}
+        stroke="rgb(0, 99, 255)"
         strokeWidth={4}
         opacity={0.6}
       />

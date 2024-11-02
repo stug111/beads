@@ -1,4 +1,4 @@
-import Konva from "konva";
+import Konva from "konva/lib/core";
 import { Group, Layer, Stage } from "react-konva";
 import { selectTool, Tool } from "@/entities/tools";
 import { beadSizes } from "@/shared/config";
@@ -7,6 +7,7 @@ import { getPatternKey } from "@/shared/lib";
 import { useAppSelector } from "@/shared/model";
 import type { Pattern } from "@/shared/types";
 import { axisXHeight, axisYWidth } from "../../config/elementSize";
+import { useZoomStage } from "../../lib/useZoomStage";
 import { AxisX } from "../AxisX/AxisX";
 import { AxisY } from "../AxisY/AxisY";
 import { BeadSquare } from "../BeadSquare/BeadSquare";
@@ -24,6 +25,7 @@ Konva.hitOnDragEnabled = true;
 
 export const BeadStage = (props: BeadStageProps) => {
   const { width, height } = useWindowSize();
+  const { handelTouchend, handleTouchMove, handleWheel } = useZoomStage();
   const too = useAppSelector(selectTool);
   const { rows, columns, colorClick, pattern } = props;
   const viewBoxHeight =
@@ -37,6 +39,9 @@ export const BeadStage = (props: BeadStageProps) => {
       width={width}
       className={styles.root}
       draggable={too === Tool.drag}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handelTouchend}
+      onWheel={handleWheel}
     >
       <Layer>
         <Group x={width / 2} y={height / 2}>

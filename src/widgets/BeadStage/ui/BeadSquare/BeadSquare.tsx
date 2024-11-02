@@ -1,7 +1,8 @@
 import { Rect } from "react-konva";
-import { updatePattern } from "@/entities/pattern";
+import { removeItemFromPattern, updatePattern } from "@/entities/pattern";
+import { selectTool, Tool } from "@/entities/tools";
 import { beadSizes } from "@/shared/config";
-import { useAppDispatch } from "@/shared/model";
+import { useAppDispatch, useAppSelector } from "@/shared/model";
 
 interface BeadSquareProps {
   row: number;
@@ -17,15 +18,25 @@ const height = beadSizes.square.height;
 export const BeadSquare = (props: BeadSquareProps) => {
   const { row, column, odd, patternColor = "transparent", colorClick } = props;
   const dispatch = useAppDispatch();
+  const tool = useAppSelector(selectTool);
 
   const handleClick = () => {
-    dispatch(
-      updatePattern({
-        x: row,
-        y: column,
-        color: colorClick,
-      })
-    );
+    if (tool === Tool.fill) {
+      dispatch(
+        updatePattern({
+          x: row,
+          y: column,
+          color: colorClick,
+        })
+      );
+    } else if (tool === Tool.eraser) {
+      dispatch(
+        removeItemFromPattern({
+          x: row,
+          y: column,
+        })
+      );
+    }
   };
 
   return (

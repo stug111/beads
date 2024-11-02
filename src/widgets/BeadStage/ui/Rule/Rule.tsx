@@ -1,8 +1,7 @@
 import type { Group as GroupInstance } from "konva/lib/Group";
 import type { KonvaEventObject, Node } from "konva/lib/Node";
-import type { Stage as StageInstance } from "konva/lib/Stage";
 import type { Vector2d } from "konva/lib/types";
-import { useRef, type RefObject } from "react";
+import { useRef } from "react";
 import { Circle, Group, Line } from "react-konva";
 import { beadSizes } from "@/shared/config";
 import { axisYWidth } from "../../config/elementSize";
@@ -10,12 +9,11 @@ import { axisYWidth } from "../../config/elementSize";
 interface RuleProps {
   viewBoxHeight: number;
   viewBoxWidth: number;
-  refStage: RefObject<StageInstance>;
 }
 const circleRadius = 16;
 
 export const Rule = (props: RuleProps) => {
-  const { viewBoxHeight, viewBoxWidth, refStage } = props;
+  const { viewBoxHeight, viewBoxWidth } = props;
   const refGroup = useRef<GroupInstance>(null);
 
   function handleDragBoundFunc(this: Node, pos: Vector2d): Vector2d {
@@ -37,16 +35,16 @@ export const Rule = (props: RuleProps) => {
     }
   };
 
-  const handleMouseEnter = () => {
-    const stage = refStage.current;
+  const handleMouseEnter = (e: KonvaEventObject<MouseEvent>) => {
+    const stage = e.target.getStage();
 
     if (stage) {
       stage.container().style.cursor = "pointer";
     }
   };
 
-  const handleMouseLeave = () => {
-    const stage = refStage.current;
+  const handleMouseLeave = (e: KonvaEventObject<MouseEvent>) => {
+    const stage = e.target.getStage();
 
     if (stage) {
       stage.container().style.cursor = "default";

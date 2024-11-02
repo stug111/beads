@@ -1,15 +1,17 @@
-import type { Stage as StageInstance } from "konva/lib/Stage";
-import { useEffect, useRef } from "react";
+import Konva from "konva";
 import { Group, Layer, Stage } from "react-konva";
+import { selectTool, Tool } from "@/entities/tools";
 import { beadSizes } from "@/shared/config";
 import { useWindowSize } from "@/shared/hooks";
 import { getPatternKey } from "@/shared/lib";
+import { useAppSelector } from "@/shared/model";
 import type { Pattern } from "@/shared/types";
 import { axisXHeight, axisYWidth } from "../../config/elementSize";
 import { AxisX } from "../AxisX/AxisX";
 import { AxisY } from "../AxisY/AxisY";
 import { BeadSquare } from "../BeadSquare/BeadSquare";
 import { Rule } from "../Rule/Rule";
+import * as styles from "./BeadStage.css";
 
 interface BeadStageProps {
   rows: number;
@@ -18,34 +20,27 @@ interface BeadStageProps {
   pattern: Record<string, Pattern>;
 }
 
+Konva.hitOnDragEnabled = true;
+
 export const BeadStage = (props: BeadStageProps) => {
-  const refStage = useRef<StageInstance>(null);
-  const { width } = useWindowSize();
+  const { width, height } = useWindowSize();
+  const too = useAppSelector(selectTool);
   const { rows, columns, colorClick, pattern } = props;
   const viewBoxHeight =
     beadSizes.square.height * rows + axisXHeight + axisXHeight;
   const viewBoxWidth =
     beadSizes.square.width * columns + beadSizes.square.width / 2 + axisYWidth;
 
-  useEffect(() => {
-    const refCurrent = refStage.current;
-
-    if (refCurrent) {
-      if (width < viewBoxWidth) {
-        const scale = width / viewBoxWidth;
-
-        if (scale) {
-          refCurrent.scale({ x: scale, y: scale });
-        }
-      }
-    }
-  }, [viewBoxWidth, width]);
-
   return (
-    <Stage ref={refStage} width={width} height={viewBoxHeight}>
+    <Stage
+      height={height}
+      width={width}
+      className={styles.root}
+      draggable={too === Tool.drag}
+    >
       <Layer>
-        <Group x={viewBoxWidth / 2}>
-          <Group x={-viewBoxWidth / 2}>
+        <Group x={width / 2} y={height / 2}>
+          <Group x={-viewBoxWidth / 2} y={-viewBoxHeight / 2}>
             <Group y={axisXHeight} x={axisYWidth}>
               {[...Array(rows).keys()].map((_, indexRow) => {
                 return [...Array(columns).keys()].map((_, indexColumn) => {
@@ -79,11 +74,7 @@ export const BeadStage = (props: BeadStageProps) => {
               <AxisY size={rows} />
             </Group>
             <Group x={axisYWidth}>
-              <Rule
-                refStage={refStage}
-                viewBoxHeight={viewBoxHeight}
-                viewBoxWidth={viewBoxWidth}
-              />
+              <Rule viewBoxHeight={viewBoxHeight} viewBoxWidth={viewBoxWidth} />
             </Group>
           </Group>
         </Group>

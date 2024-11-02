@@ -12,12 +12,14 @@ import {
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 import storage from "redux-persist-indexeddb-storage";
+import { toolsSlice } from "@/entities/tools";
 import { rootReducer } from "./rootReducer";
 
 const persistConfig = {
   key: "beads",
   version: 1,
   storage: storage("beadsDB"),
+  blacklist: [toolsSlice.name],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

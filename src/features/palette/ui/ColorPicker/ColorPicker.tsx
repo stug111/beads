@@ -2,6 +2,7 @@ import { HexColorPicker } from "react-colorful";
 import { useDispatch } from "react-redux";
 import { selectSelectedColor, updateSelectedColor } from "@/entities/palette";
 import { useAppSelector } from "@/shared/model";
+import * as styles from "./ColorPicker.css";
 
 export const ColorPicker = () => {
   const dispatch = useDispatch();
@@ -11,5 +12,11 @@ export const ColorPicker = () => {
     dispatch(updateSelectedColor(color));
   };
 
-  return <HexColorPicker color={color} onChange={handelChangeColor} />;
+  return (
+    <HexColorPicker
+      className={styles.root}
+      color={color}
+      onChange={handelChangeColor}
+    />
+  );
 };

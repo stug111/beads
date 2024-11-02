@@ -1,5 +1,7 @@
+import { Button } from "@headlessui/react";
 import { saveColor, selectSelectedColor } from "@/entities/palette";
 import { useAppDispatch, useAppSelector } from "@/shared/model";
+import * as styles from "./AddPaletteColor.css";
 
 export const AddPaletteColor = () => {
   const dispatch = useAppDispatch();
@@ -10,8 +12,8 @@ export const AddPaletteColor = () => {
   };
 
   return (
-    <button type="button" onClick={handleClick}>
-      Save color to palette
-    </button>
+    <Button type="button" onClick={handleClick} className={styles.root}>
+      Сохранить цвет
+    </Button>
   );
 };

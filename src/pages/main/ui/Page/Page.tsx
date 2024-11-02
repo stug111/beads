@@ -1,16 +1,10 @@
 import { BeadStage } from "@/widgets/BeadStage";
-import {
-  AddPaletteColor,
-  ColorPicker,
-  SavedColorList,
-} from "@/features/palette";
-import { ClearPattern } from "@/features/pattern";
-import { ChangeSize } from "@/features/settings";
+import { BottomPanel } from "@/widgets/BottomPanel";
+import { LeftPanel } from "@/widgets/LeftPanel";
+import { TopPanel } from "@/widgets/TopPanel";
 import { selectSelectedColor } from "@/entities/palette";
-import { selectPattern } from "@/entities/pattern";
-import { selectSize } from "@/entities/settings";
+import { selectPattern, selectSize } from "@/entities/pattern";
 import { useAppSelector } from "@/shared/model";
-import * as styles from "./Page.css";
 
 export const MainPage = () => {
   const size = useAppSelector(selectSize);
@@ -19,27 +13,15 @@ export const MainPage = () => {
 
   return (
     <div>
-      <ChangeSize type="rows" />
-      <ChangeSize type="columns" />
-      <div className={styles.container}>
-        <div>
-          <ColorPicker />
-          <AddPaletteColor />
-          <ClearPattern />
-        </div>
-        <div>
-          <SavedColorList />
-        </div>
-      </div>
-
-      <div>
-        <BeadStage
-          rows={size.rows}
-          columns={size.columns}
-          colorClick={color}
-          pattern={pattern}
-        />
-      </div>
+      <BeadStage
+        rows={size.rows}
+        columns={size.columns}
+        colorClick={color}
+        pattern={pattern}
+      />
+      <TopPanel />
+      <LeftPanel />
+      <BottomPanel />
     </div>
   );
 };

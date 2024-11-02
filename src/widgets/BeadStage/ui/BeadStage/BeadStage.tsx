@@ -1,4 +1,4 @@
-import Konva from "konva/lib/core";
+import Konva from "konva";
 import { Group, Layer, Stage } from "react-konva";
 import { selectTool, Tool } from "@/entities/tools";
 import { beadSizes } from "@/shared/config";

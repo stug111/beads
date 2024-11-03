@@ -12,12 +12,6 @@ export const root = style({
   width: 228,
 });
 
-export const sizeContainer = style({
-  display: "flex",
-  flexDirection: "column",
-  gap: 8,
-});
-
 export const colorsContainer = style({
   marginTop: 20,
 });

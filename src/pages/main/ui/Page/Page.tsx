@@ -5,6 +5,7 @@ import { TopPanel } from "@/widgets/TopPanel";
 import { selectSelectedColor } from "@/entities/palette";
 import { selectPattern, selectSize } from "@/entities/pattern";
 import { useAppSelector } from "@/shared/model";
+import * as styles from "./Page.css";
 
 export const MainPage = () => {
   const size = useAppSelector(selectSize);
@@ -12,7 +13,7 @@ export const MainPage = () => {
   const pattern = useAppSelector(selectPattern);
 
   return (
-    <div>
+    <div className={styles.root}>
       <BeadStage
         rows={size.rows}
         columns={size.columns}

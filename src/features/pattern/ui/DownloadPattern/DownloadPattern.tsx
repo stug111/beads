@@ -1,26 +1,18 @@
-import type { RefObject } from "react";
+import { useCanvas } from "@/entities/canvas";
+import { Button } from "@/shared/ui";
 
-interface DownloadPatternProps {
-  svgRef: RefObject<SVGSVGElement>;
-}
+export const DownloadPattern = () => {
+  const { beadPattern } = useCanvas();
 
-export const DownloadPattern = (props: DownloadPatternProps) => {
-  const { svgRef } = props;
-
-  //   TODO: add logic download jpeg not svg
   const handleDownload = () => {
-    const svg = svgRef.current;
+    const stageRef = beadPattern.current;
 
-    if (svg) {
-      const svgContent = svg.outerHTML;
-      console.log(svgContent);
-      const imageURL = URL.createObjectURL(
-        new Blob([svgContent], { type: "image/svg+xml" })
-      );
+    if (stageRef) {
+      const url = stageRef.toDataURL();
 
       const link = document.createElement("a");
-      link.href = imageURL;
-      link.download = "image file name here";
+      link.href = url;
+      link.download = "pattern";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -28,8 +20,8 @@ export const DownloadPattern = (props: DownloadPatternProps) => {
   };
 
   return (
-    <button type="button" onClick={handleDownload}>
-      DownloadPattern
-    </button>
+    <Button type="button" size="l" onClick={handleDownload}>
+      Скачать шаблон
+    </Button>
   );
 };

@@ -1,5 +1,6 @@
 import Konva from "konva";
-import { Group, Layer, Stage } from "react-konva";
+import { Group, Layer, Rect, Stage } from "react-konva";
+import { useCanvas } from "@/entities/canvas";
 import { selectTool, Tool } from "@/entities/tools";
 import { beadSizes } from "@/shared/config";
 import { useWindowSize } from "@/shared/hooks";
@@ -25,8 +26,9 @@ Konva.hitOnDragEnabled = true;
 
 export const BeadStage = (props: BeadStageProps) => {
   const { width, height } = useWindowSize();
+  const { stage, beadPattern } = useCanvas();
   const { handelTouchend, handleTouchMove, handleWheel } = useZoomStage();
-  const too = useAppSelector(selectTool);
+  const tool = useAppSelector(selectTool);
   const { rows, columns, colorClick, pattern } = props;
   const viewBoxHeight =
     beadSizes.square.height * rows + axisXHeight + axisXHeight;
@@ -35,10 +37,11 @@ export const BeadStage = (props: BeadStageProps) => {
 
   return (
     <Stage
+      ref={stage}
       height={height}
       width={width}
       className={styles.root}
-      draggable={too === Tool.drag}
+      draggable={tool === Tool.drag}
       onTouchMove={handleTouchMove}
       onTouchEnd={handelTouchend}
       onWheel={handleWheel}
@@ -46,38 +49,49 @@ export const BeadStage = (props: BeadStageProps) => {
       <Layer>
         <Group x={width / 2} y={height / 2}>
           <Group x={-viewBoxWidth / 2} y={-viewBoxHeight / 2}>
-            <Group y={axisXHeight} x={axisYWidth}>
-              {[...Array(rows).keys()].map((_, indexRow) => {
-                return [...Array(columns).keys()].map((_, indexColumn) => {
-                  const isOdd = indexRow % 2 === 1;
-                  const patternColor =
-                    pattern[getPatternKey(indexRow, indexColumn)];
+            <Group ref={beadPattern}>
+              {/* Background */}
+              <Rect
+                y={0}
+                x={0}
+                width={viewBoxWidth}
+                height={viewBoxHeight}
+                fill={"#ffffff"}
+              />
+              <Group y={axisXHeight} x={axisYWidth}>
+                {[...Array(rows).keys()].map((_, indexRow) => {
+                  return [...Array(columns).keys()].map((_, indexColumn) => {
+                    const isOdd = indexRow % 2 === 1;
+                    const patternColor =
+                      pattern[getPatternKey(indexRow, indexColumn)];
 
-                  return (
-                    <BeadSquare
-                      key={`${indexRow}-${indexColumn}`}
-                      column={indexColumn}
-                      row={indexRow}
-                      odd={isOdd}
-                      colorClick={colorClick}
-                      patternColor={patternColor?.color}
-                    />
-                  );
-                });
-              })}
+                    return (
+                      <BeadSquare
+                        key={`${indexRow}-${indexColumn}`}
+                        column={indexColumn}
+                        row={indexRow}
+                        odd={isOdd}
+                        colorClick={colorClick}
+                        patternColor={patternColor?.color}
+                      />
+                    );
+                  });
+                })}
+              </Group>
+              <Group x={axisYWidth}>
+                <AxisX size={columns} />
+              </Group>
+              <Group
+                y={viewBoxHeight - axisXHeight}
+                x={axisYWidth + beadSizes.square.width / 2}
+              >
+                <AxisX size={columns} />
+              </Group>
+              <Group y={axisXHeight}>
+                <AxisY size={rows} />
+              </Group>
             </Group>
-            <Group x={axisYWidth}>
-              <AxisX size={columns} />
-            </Group>
-            <Group
-              y={viewBoxHeight - axisXHeight}
-              x={axisYWidth + beadSizes.square.width / 2}
-            >
-              <AxisX size={columns} />
-            </Group>
-            <Group y={axisXHeight}>
-              <AxisY size={rows} />
-            </Group>
+
             <Group x={axisYWidth}>
               <Rule viewBoxHeight={viewBoxHeight} viewBoxWidth={viewBoxWidth} />
             </Group>

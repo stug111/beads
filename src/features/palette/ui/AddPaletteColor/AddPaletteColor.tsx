@@ -1,6 +1,6 @@
-import { Button } from "@headlessui/react";
 import { saveColor, selectSelectedColor } from "@/entities/palette";
 import { useAppDispatch, useAppSelector } from "@/shared/model";
+import { Button } from "@/shared/ui";
 import * as styles from "./AddPaletteColor.css";
 
 export const AddPaletteColor = () => {
@@ -12,7 +12,12 @@ export const AddPaletteColor = () => {
   };
 
   return (
-    <Button type="button" onClick={handleClick} className={styles.root}>
+    <Button
+      type="button"
+      onClick={handleClick}
+      size="m"
+      className={styles.root}
+    >
       Сохранить цвет
     </Button>
   );

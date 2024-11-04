@@ -17,6 +17,9 @@ importers:
       '@vanilla-extract/css':
         specifier: ^1.16.0
         version: 1.16.0
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       konva:
         specifier: ^9.3.16
         version: 9.3.16

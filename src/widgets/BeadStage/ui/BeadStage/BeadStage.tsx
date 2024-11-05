@@ -42,8 +42,8 @@ export const BeadStage = (props: BeadStageProps) => {
       width={width}
       className={styles.root}
       draggable={tool === Tool.drag}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handelTouchend}
+      onTouchMove={tool === Tool.drag ? handleTouchMove : undefined}
+      onTouchEnd={tool === Tool.drag ? handelTouchend : undefined}
       onWheel={handleWheel}
     >
       <Layer>

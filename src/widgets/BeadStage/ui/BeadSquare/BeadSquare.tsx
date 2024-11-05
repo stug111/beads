@@ -21,7 +21,7 @@ export const BeadSquare = (props: BeadSquareProps) => {
   const tool = useAppSelector(selectTool);
 
   const handleClick = () => {
-    if (tool === Tool.fill) {
+    if (tool === Tool.fill && colorClick !== patternColor) {
       dispatch(
         updatePattern({
           x: row,
@@ -29,7 +29,7 @@ export const BeadSquare = (props: BeadSquareProps) => {
           color: colorClick,
         })
       );
-    } else if (tool === Tool.eraser) {
+    } else if (tool === Tool.eraser && patternColor !== "transparent") {
       dispatch(
         removeItemFromPattern({
           x: row,
@@ -51,6 +51,8 @@ export const BeadSquare = (props: BeadSquareProps) => {
       onTap={handleClick}
       fill={patternColor}
       cornerRadius={5}
+      onTouchMove={handleClick}
+      onMouseMove={handleClick}
     />
   );
 };

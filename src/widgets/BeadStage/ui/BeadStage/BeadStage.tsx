@@ -14,6 +14,7 @@ import { AxisY } from "../AxisY/AxisY";
 import { BeadSquare } from "../BeadSquare/BeadSquare";
 import { Rule } from "../Rule/Rule";
 import * as styles from "./BeadStage.css";
+import { useState } from "react";
 
 interface BeadStageProps {
   rows: number;
@@ -25,6 +26,7 @@ interface BeadStageProps {
 Konva.hitOnDragEnabled = true;
 
 export const BeadStage = (props: BeadStageProps) => {
+  const [isMouseDown, setIsMouseDown] = useState(false);
   const { width, height } = useWindowSize();
   const { stage, beadPattern } = useCanvas();
   const { handelTouchend, handleTouchMove, handleWheel } = useZoomStage();
@@ -44,6 +46,8 @@ export const BeadStage = (props: BeadStageProps) => {
       draggable={tool === Tool.drag}
       onTouchMove={tool === Tool.drag ? handleTouchMove : undefined}
       onTouchEnd={tool === Tool.drag ? handelTouchend : undefined}
+      onMouseDown={() => setIsMouseDown(true)}
+      onMouseUp={() => setIsMouseDown(false)}
       onWheel={handleWheel}
     >
       <Layer>
@@ -73,6 +77,7 @@ export const BeadStage = (props: BeadStageProps) => {
                         odd={isOdd}
                         colorClick={colorClick}
                         patternColor={patternColor?.color}
+                        isMouseDown={isMouseDown}
                       />
                     );
                   });

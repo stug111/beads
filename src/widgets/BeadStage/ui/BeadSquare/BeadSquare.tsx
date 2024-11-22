@@ -10,13 +10,21 @@ interface BeadSquareProps {
   colorClick: string;
   odd?: boolean;
   patternColor?: string;
+  isMouseDown?: boolean;
 }
 
 const width = beadSizes.square.width;
 const height = beadSizes.square.height;
 
 export const BeadSquare = (props: BeadSquareProps) => {
-  const { row, column, odd, patternColor = "transparent", colorClick } = props;
+  const {
+    row,
+    column,
+    odd,
+    patternColor = "transparent",
+    colorClick,
+    isMouseDown,
+  } = props;
   const dispatch = useAppDispatch();
   const tool = useAppSelector(selectTool);
 
@@ -52,7 +60,7 @@ export const BeadSquare = (props: BeadSquareProps) => {
       fill={patternColor}
       cornerRadius={5}
       onTouchMove={handleClick}
-      onMouseMove={handleClick}
+      onMouseMove={isMouseDown ? handleClick : undefined}
     />
   );
 };

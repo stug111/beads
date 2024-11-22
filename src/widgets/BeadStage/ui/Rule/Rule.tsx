@@ -9,11 +9,13 @@ import { axisYWidth } from "../../config/elementSize";
 interface RuleProps {
   viewBoxHeight: number;
   viewBoxWidth: number;
+  onDragEnd?: () => void;
+  onDragStart?: () => void;
 }
 const circleRadius = 16;
 
 export const Rule = (props: RuleProps) => {
-  const { viewBoxHeight, viewBoxWidth } = props;
+  const { viewBoxHeight, viewBoxWidth, onDragEnd, onDragStart } = props;
   const refGroup = useRef<GroupInstance>(null);
 
   function handleDragBoundFunc(this: Node, pos: Vector2d): Vector2d {
@@ -33,6 +35,7 @@ export const Rule = (props: RuleProps) => {
       const x = Math.max(0, Math.min(viewBoxWidth - axisYWidth, gridByGrid));
       group.x(x);
     }
+    onDragStart?.();
   };
 
   const handleMouseEnter = (e: KonvaEventObject<MouseEvent>) => {
@@ -49,6 +52,8 @@ export const Rule = (props: RuleProps) => {
     if (stage) {
       stage.container().style.cursor = "default";
     }
+
+    onDragEnd?.();
   };
 
   return (

@@ -27,6 +27,7 @@ Konva.hitOnDragEnabled = true;
 
 export const BeadStage = (props: BeadStageProps) => {
   const [isMouseDown, setIsMouseDown] = useState(false);
+  const [isRuleDrag, setIsRuleDrag] = useState(false);
   const { width, height } = useWindowSize();
   const { stage, beadPattern } = useCanvas();
   const { handelTouchend, handleTouchMove, handleWheel } = useZoomStage();
@@ -77,7 +78,7 @@ export const BeadStage = (props: BeadStageProps) => {
                         odd={isOdd}
                         colorClick={colorClick}
                         patternColor={patternColor?.color}
-                        isMouseDown={isMouseDown}
+                        isMouseDown={isRuleDrag ? false : isMouseDown}
                       />
                     );
                   });
@@ -98,7 +99,12 @@ export const BeadStage = (props: BeadStageProps) => {
             </Group>
 
             <Group x={axisYWidth}>
-              <Rule viewBoxHeight={viewBoxHeight} viewBoxWidth={viewBoxWidth} />
+              <Rule
+                viewBoxHeight={viewBoxHeight}
+                viewBoxWidth={viewBoxWidth}
+                onDragEnd={() => setIsRuleDrag(false)}
+                onDragStart={() => setIsRuleDrag(true)}
+              />
             </Group>
           </Group>
         </Group>

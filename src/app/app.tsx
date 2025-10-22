@@ -1,5 +1,5 @@
 import { ErrorBoundary } from "react-error-boundary";
-import { BeadCanvas, BeadProvider } from "../entities/bead";
+import { BeadCanvas } from "../entities/bead";
 
 function fallbackRender({ error }: { error: Error }) {
   return (
@@ -13,9 +13,7 @@ function fallbackRender({ error }: { error: Error }) {
 export function App() {
   return (
     <ErrorBoundary fallbackRender={fallbackRender}>
-      <BeadProvider>
-        <BeadCanvas />
-      </BeadProvider>
+      <BeadCanvas />
     </ErrorBoundary>
   );
 }

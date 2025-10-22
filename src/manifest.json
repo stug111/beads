@@ -1,0 +1,37 @@
+{
+  "bundles": [
+    {
+      "name": "default",
+      "assets": [
+        {
+          "alias": [
+            "bead.png"
+          ],
+          "src": [
+            "bead@0.5x.webp",
+            "bead@0.5x.png",
+            "bead.webp",
+            "bead.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "rule.png"
+          ],
+          "src": [
+            "rule@0.5x.webp",
+            "rule@0.5x.png",
+            "rule.webp",
+            "rule.png"
+          ],
+          "data": {
+            "tags": {}
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,10 +1,8 @@
-import { useBeadModel } from "../model/use-bead-model";
+import { colorStore } from "../model/color-store";
 
 export function ColorPicker() {
-  const { instance } = useBeadModel();
-
   const handleClick = () => {
-    instance.setActiveColor("red");
+    colorStore.setColor("red");
   };
 
   return (

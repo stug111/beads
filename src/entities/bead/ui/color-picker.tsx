@@ -1,17 +1,14 @@
-import { colorStore } from "../model/color-store";
+import type { ChangeEvent } from "react";
+import { events } from "../lib/event-emitter";
 
 export function ColorPicker() {
-  const handleClick = () => {
-    colorStore.setColor("red");
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    events.emit("changeColor", { color: e.target.value });
   };
 
   return (
-    <button
-      onClick={handleClick}
-      type="button"
-      className="absolute bottom-0 left-0 m-4 p-2 bg-white border border-gray-300 rounded cursor-pointer"
-    >
-      Color Picker
-    </button>
+    <div className="absolute bottom-0 left-0 m-4 ">
+      <input type="color" className=" bg-white border border-gray-300 rounded cursor-pointer" onChange={handleChange} />
+    </div>
   );
 }

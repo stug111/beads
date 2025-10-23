@@ -1,6 +1,7 @@
 import { FederatedPointerEvent, Sprite, Texture } from "pixi.js";
 import { useRef } from "react";
 import { beadHeight, beadWidth, rows } from "../config/config";
+import { getMode } from "../model/store";
 
 export function BeadRule() {
   const spriteRef = useRef<Sprite>(null);
@@ -8,11 +9,18 @@ export function BeadRule() {
   const dragOffset = useRef({ x: 0 });
 
   const handlePointerDown = (e: FederatedPointerEvent) => {
+    if (getMode() === "drag") {
+      isDragging.current = false;
+      return;
+    }
+
     if (!spriteRef.current) return;
 
     isDragging.current = true;
+
+    const localPos = spriteRef.current.parent!.toLocal(e.global);
     dragOffset.current = {
-      x: e.global.x - spriteRef.current.x,
+      x: localPos.x - spriteRef.current.x,
     };
   };
 
@@ -21,7 +29,9 @@ export function BeadRule() {
 
     const sprite = spriteRef.current;
     const step = beadWidth;
-    const newX = e.global.x - dragOffset.current.x;
+
+    const localPos = sprite.parent!.toLocal(e.global);
+    const newX = localPos.x - dragOffset.current.x;
 
     const snappedX = Math.round(newX / step) * step;
 

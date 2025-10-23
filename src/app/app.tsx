@@ -1,5 +1,6 @@
 import { ErrorBoundary } from "react-error-boundary";
 import { BeadCanvas } from "../entities/bead";
+// import { BeadCanvas } from "../entities/bead-function";
 
 function fallbackRender({ error }: { error: Error }) {
   return (

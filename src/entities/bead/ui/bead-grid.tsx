@@ -1,8 +1,9 @@
 import { Container, FederatedPointerEvent, Point, Sprite, Texture } from "pixi.js";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { createBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
-import { colorStore } from "../model/color-store";
 import { beadHeight, beadWidth, cols, rows } from "../config/config";
+import { events } from "../lib/event-emitter";
+import { getColor, getMode } from "../model/store";
 
 function getCellIdFromPointer(point: Point): BeadCellId | null {
   const row = Math.floor(point.y / beadHeight);
@@ -20,6 +21,7 @@ export function BeadGrid() {
   const ref = useRef<Container>(null);
   const cells = useRef<Map<BeadCellId, Sprite>>(new Map());
   const isDrawing = useRef(false);
+  const color = useRef<string>(getColor());
 
   const handleDraw = (point: Point) => {
     const cellId = getCellIdFromPointer(point);
@@ -29,22 +31,46 @@ export function BeadGrid() {
 
     if (!bead) return;
 
-    bead.tint = colorStore.getColor();
+    bead.tint = color.current;
   };
 
   const handlePointerMove = (e: FederatedPointerEvent) => {
-    if (!isDrawing.current) return;
-    handleDraw(e.global);
+    const refCurrent = ref.current;
+
+    if (!isDrawing.current || !refCurrent) return;
+
+    handleDraw(refCurrent.toLocal(e.global));
   };
 
   const handlePointerDown = (e: FederatedPointerEvent) => {
+    if (getMode() !== "draw") {
+      isDrawing.current = false;
+      return;
+    }
+
     isDrawing.current = true;
-    handleDraw(e.global);
+    const refCurrent = ref.current;
+
+    if (!refCurrent) return;
+
+    handleDraw(refCurrent.toLocal(e.global));
   };
 
   const handlePointerUp = () => {
     isDrawing.current = false;
   };
+
+  useEffect(() => {
+    function onColorChange(payload: { color: string }) {
+      color.current = payload.color;
+    }
+
+    events.on("changeColor", onColorChange);
+
+    return () => {
+      events.off("changeColor", onColorChange);
+    };
+  }, []);
 
   return (
     <pixiContainer

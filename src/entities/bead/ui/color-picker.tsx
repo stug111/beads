@@ -1,9 +1,9 @@
 import type { ChangeEvent } from "react";
-import { events } from "../lib/event-emitter";
+import { changeColor } from "../model/store";
 
 export function ColorPicker() {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    events.emit("changeColor", { color: e.target.value });
+    changeColor(e.target.value);
   };
 
   return (

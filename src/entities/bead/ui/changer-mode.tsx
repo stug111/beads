@@ -1,8 +1,8 @@
-import { events } from "../lib/event-emitter";
+import { changeMode, type StoreState } from "../model/store";
 
 export function ChangerMode() {
-  const handleChangeMode = (mode: "drag" | "draw" | "erase") => () => {
-    events.emit("changeMode", { mode });
+  const handleChangeMode = (mode: StoreState["mode"]) => () => {
+    changeMode(mode);
   };
 
   return (

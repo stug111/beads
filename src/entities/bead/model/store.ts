@@ -1,3 +1,4 @@
+import { useMemo, useSyncExternalStore } from "react";
 import { events } from "../lib/event-emitter";
 
 export type StoreState = {
@@ -8,21 +9,11 @@ export type StoreState = {
 type StoreListener = (state: StoreState) => void;
 
 function createBeadStore() {
-  const state: StoreState = {
+  let state: StoreState = {
     color: "#000000",
     mode: "drag",
   };
   const listeners = new Set<StoreListener>();
-
-  events.on("changeColor", (payload) => {
-    state.color = payload.color;
-    listeners.forEach((listener) => listener(state));
-  });
-
-  events.on("changeMode", (payload) => {
-    state.mode = payload.mode;
-    listeners.forEach((listener) => listener(state));
-  });
 
   return {
     getSnapshot: () => state,
@@ -31,6 +22,16 @@ function createBeadStore() {
       return () => {
         listeners.delete(listener);
       };
+    },
+    changeColor: (color: StoreState["color"]) => {
+      state = { ...state, color };
+      events.emit("changeColor", { color });
+      listeners.forEach((listener) => listener(state));
+    },
+    changeMode: (mode: StoreState["mode"]) => {
+      state = { ...state, mode };
+      events.emit("changeMode", { mode });
+      listeners.forEach((listener) => listener(state));
     },
   };
 }
@@ -43,4 +44,12 @@ export function getColor() {
 
 export function getMode() {
   return beadStore.getSnapshot().mode;
+}
+
+export const { changeColor, changeMode } = beadStore;
+
+export function useBeadStore<T = StoreState>(selector: (state: StoreState) => T = (state) => state as T) {
+  const getSnapshot = useMemo(() => () => selector(beadStore.getSnapshot()), [selector]);
+  const store = useSyncExternalStore(beadStore.subscribe, getSnapshot);
+  return store;
 }

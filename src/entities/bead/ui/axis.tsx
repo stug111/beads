@@ -13,7 +13,7 @@ export function Axis(props: AxisProps) {
   const isHorizontal = direction === "horizontal";
 
   return (
-    <pixiContainer label={`Axis ${isHorizontal ? "Horizontal" : "Vertical"}`} anchor={0.5} x={x} y={y}>
+    <pixiContainer label={`Axis ${isHorizontal ? "Horizontal" : "Vertical"}`} x={x} y={y}>
       {Array.from({ length: count }).map((_, index) => (
         <pixiText
           key={index}

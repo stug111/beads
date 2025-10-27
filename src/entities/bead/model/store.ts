@@ -1,55 +1,38 @@
-import { useMemo, useSyncExternalStore } from "react";
-import { events } from "../lib/event-emitter";
+import { createBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
+import { createSignal } from "../lib/signals";
 
-export type StoreState = {
+export type Cell = {
   color: string;
-  mode: "drag" | "draw" | "erase";
 };
 
-type StoreListener = (state: StoreState) => void;
+export const color = createSignal<string>("#000000");
+export const mode = createSignal<"drag" | "draw" | "erase">("drag");
+export const palette = createSignal<Map<BeadCellId, Cell>>(new Map());
 
-function createBeadStore() {
-  let state: StoreState = {
-    color: "#000000",
-    mode: "drag",
-  };
-  const listeners = new Set<StoreListener>();
-
-  return {
-    getSnapshot: () => state,
-    subscribe: (listener: StoreListener) => {
-      listeners.add(listener);
-      return () => {
-        listeners.delete(listener);
-      };
-    },
-    changeColor: (color: StoreState["color"]) => {
-      state = { ...state, color };
-      events.emit("changeColor", { color });
-      listeners.forEach((listener) => listener(state));
-    },
-    changeMode: (mode: StoreState["mode"]) => {
-      state = { ...state, mode };
-      events.emit("changeMode", { mode });
-      listeners.forEach((listener) => listener(state));
-    },
-  };
+export function changeColor(newColor: string) {
+  color.set(newColor);
 }
 
-const beadStore = createBeadStore();
-
-export function getColor() {
-  return beadStore.getSnapshot().color;
+export function changeMode(newMode: "drag" | "draw" | "erase") {
+  mode.set(newMode);
 }
 
-export function getMode() {
-  return beadStore.getSnapshot().mode;
+export function addToPalette(color: string, x: number, y: number) {
+  const cellId = createBeadCellId(x, y);
+  const currentPalette = palette();
+
+  if (currentPalette.has(cellId) && currentPalette.get(cellId)?.color === color) return;
+
+  currentPalette.set(cellId, { color });
+  palette.set(currentPalette);
 }
 
-export const { changeColor, changeMode } = beadStore;
+export function removeFromPalette(x: number, y: number) {
+  const cellId = createBeadCellId(x, y);
+  const currentPalette = palette();
 
-export function useBeadStore<T = StoreState>(selector: (state: StoreState) => T = (state) => state as T) {
-  const getSnapshot = useMemo(() => () => selector(beadStore.getSnapshot()), [selector]);
-  const store = useSyncExternalStore(beadStore.subscribe, getSnapshot);
-  return store;
+  if (!currentPalette.has(cellId)) return;
+
+  currentPalette.delete(cellId);
+  palette.set(currentPalette);
 }

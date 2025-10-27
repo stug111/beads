@@ -1,7 +1,7 @@
-import { changeMode, type StoreState } from "../model/store";
+import { changeMode } from "../model/store";
 
 export function ChangerMode() {
-  const handleChangeMode = (mode: StoreState["mode"]) => () => {
+  const handleChangeMode = (mode: "drag" | "draw" | "erase") => () => {
     changeMode(mode);
   };
 

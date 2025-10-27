@@ -1,7 +1,7 @@
 import { FederatedPointerEvent, Sprite, Texture } from "pixi.js";
 import { useRef } from "react";
 import { beadHeight, beadWidth, rows } from "../config/config";
-import { getMode } from "../model/store";
+import { mode } from "../model/store";
 
 export function BeadRule() {
   const spriteRef = useRef<Sprite>(null);
@@ -9,7 +9,7 @@ export function BeadRule() {
   const dragOffset = useRef({ x: 0 });
 
   const handlePointerDown = (e: FederatedPointerEvent) => {
-    if (getMode() === "drag") {
+    if (mode() === "drag") {
       isDragging.current = false;
       return;
     }

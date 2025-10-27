@@ -1,11 +1,10 @@
 import { Container, FederatedPointerEvent, Point, Sprite, Texture } from "pixi.js";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { createBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
 import { beadHeight, beadWidth, cols, rows } from "../config/config";
-import { events } from "../lib/event-emitter";
-import { getColor, getMode } from "../model/store";
+import { addToPalette, color, mode, removeFromPalette } from "../model/store";
 
-function getCellIdFromPointer(point: Point): BeadCellId | null {
+function getCellFromPointer(point: Point): { x: number; y: number } | null {
   const row = Math.floor(point.y / beadHeight);
   const rowOffset = row % 2 === 1 ? beadWidth / 2 : 0;
   const col = Math.floor((point.x - rowOffset) / beadWidth);
@@ -14,24 +13,30 @@ function getCellIdFromPointer(point: Point): BeadCellId | null {
     return null;
   }
 
-  return createBeadCellId(row, col);
+  return { x: row, y: col };
 }
 
 export function BeadGrid() {
   const ref = useRef<Container>(null);
   const cells = useRef<Map<BeadCellId, Sprite>>(new Map());
   const isDrawing = useRef(false);
-  const color = useRef<string>(getColor());
 
   const handleDraw = (point: Point) => {
-    const cellId = getCellIdFromPointer(point);
-    if (cellId === null) return;
+    const cell = getCellFromPointer(point);
+    if (cell === null) return;
 
-    const bead = cells.current.get(cellId);
-
+    const bead = cells.current.get(createBeadCellId(cell.x, cell.y));
     if (!bead) return;
 
-    bead.tint = color.current;
+    const currentColor = color();
+
+    if (mode() === "erase") {
+      removeFromPalette(cell.x, cell.y);
+      bead.tint = "#ffffff";
+    } else {
+      addToPalette(currentColor, cell.x, cell.y);
+      bead.tint = currentColor;
+    }
   };
 
   const handlePointerMove = (e: FederatedPointerEvent) => {
@@ -43,7 +48,8 @@ export function BeadGrid() {
   };
 
   const handlePointerDown = (e: FederatedPointerEvent) => {
-    if (getMode() !== "draw") {
+    const currentMode = mode();
+    if (currentMode !== "draw" && currentMode !== "erase") {
       isDrawing.current = false;
       return;
     }
@@ -59,18 +65,6 @@ export function BeadGrid() {
   const handlePointerUp = () => {
     isDrawing.current = false;
   };
-
-  useEffect(() => {
-    function onColorChange(payload: { color: string }) {
-      color.current = payload.color;
-    }
-
-    events.on("changeColor", onColorChange);
-
-    return () => {
-      events.off("changeColor", onColorChange);
-    };
-  }, []);
 
   return (
     <pixiContainer

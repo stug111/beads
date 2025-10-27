@@ -1,33 +1,26 @@
-import { changeMode } from "../model/store";
+import { IconButton } from "@radix-ui/themes";
+import { changeMode, mode } from "../model/store";
+import { EraserIcon, HandIcon, Pencil2Icon } from "@radix-ui/react-icons";
+import { useSignal } from "../lib/signals";
 
 export function ChangerMode() {
+  const currentMode = useSignal(mode);
+
   const handleChangeMode = (mode: "drag" | "draw" | "erase") => () => {
     changeMode(mode);
   };
 
   return (
-    <div className="absolute top-0 right-0 m-4 p-2 bg-white border border-gray-300 rounded cursor-pointer flex gap-2">
-      <button
-        className="text-gray-700 hover:bg-gray-100 cursor-pointer"
-        type="button"
-        onClick={handleChangeMode("drag")}
-      >
-        Drag
-      </button>
-      <button
-        className="text-gray-700 hover:bg-gray-100 cursor-pointer"
-        type="button"
-        onClick={handleChangeMode("draw")}
-      >
-        Draw
-      </button>
-      <button
-        className="text-gray-700 hover:bg-gray-100 cursor-pointer"
-        type="button"
-        onClick={handleChangeMode("erase")}
-      >
-        Erase
-      </button>
+    <div className="absolute top-0 left-1/2 -translate-x-1/2 m-4 p-2 bg-white border border-gray-300 rounded-xl flex gap-2">
+      <IconButton type="button" onClick={handleChangeMode("drag")} highContrast={currentMode === "drag"}>
+        <HandIcon />
+      </IconButton>
+      <IconButton type="button" onClick={handleChangeMode("draw")} highContrast={currentMode === "draw"}>
+        <Pencil2Icon />
+      </IconButton>
+      <IconButton type="button" onClick={handleChangeMode("erase")} highContrast={currentMode === "erase"}>
+        <EraserIcon />
+      </IconButton>
     </div>
   );
 }

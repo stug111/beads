@@ -1,10 +1,11 @@
 import { Container, FederatedPointerEvent, Point, Sprite, Texture } from "pixi.js";
 import { useRef } from "react";
 import { createBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
-import { beadHeight, beadWidth, cols, rows } from "../config/config";
-import { addToPalette, color, mode, removeFromPalette } from "../model/store";
+import { beadHeight, beadWidth } from "../config/config";
+import { addToPalette, color, columns, mode, removeFromPalette, rows } from "../model/store";
+import { useSignal } from "../lib/signals";
 
-function getCellFromPointer(point: Point): { x: number; y: number } | null {
+function getCellFromPointer(point: Point, cols: number, rows: number): { x: number; y: number } | null {
   const row = Math.floor(point.y / beadHeight);
   const rowOffset = row % 2 === 1 ? beadWidth / 2 : 0;
   const col = Math.floor((point.x - rowOffset) / beadWidth);
@@ -17,12 +18,15 @@ function getCellFromPointer(point: Point): { x: number; y: number } | null {
 }
 
 export function BeadGrid() {
+  const currentRows = useSignal(rows);
+  const currentColumns = useSignal(columns);
+
   const ref = useRef<Container>(null);
   const cells = useRef<Map<BeadCellId, Sprite>>(new Map());
   const isDrawing = useRef(false);
 
   const handleDraw = (point: Point) => {
-    const cell = getCellFromPointer(point);
+    const cell = getCellFromPointer(point, currentColumns, currentRows);
     if (cell === null) return;
 
     const bead = cells.current.get(createBeadCellId(cell.x, cell.y));
@@ -76,10 +80,10 @@ export function BeadGrid() {
       onPointerUp={handlePointerUp}
       onPointerUpOutside={handlePointerUp}
     >
-      {Array.from({ length: rows }).map((_, row) => {
+      {Array.from({ length: currentRows }).map((_, row) => {
         const rowOffset = row % 2 === 1 ? beadWidth / 2 : 0;
 
-        return Array.from({ length: cols }).map((_, col) => {
+        return Array.from({ length: currentColumns }).map((_, col) => {
           const cellId: BeadCellId = createBeadCellId(row, col);
           return (
             <pixiSprite

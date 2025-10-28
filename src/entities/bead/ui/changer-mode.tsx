@@ -11,7 +11,7 @@ export function ChangerMode() {
   };
 
   return (
-    <div className="absolute top-0 left-1/2 -translate-x-1/2 m-4 p-2 bg-white border border-gray-300 rounded-xl flex gap-2">
+    <div className="p-2 bg-white border border-gray-300 rounded-xl flex gap-2">
       <IconButton type="button" onClick={handleChangeMode("drag")} highContrast={currentMode === "drag"}>
         <HandIcon />
       </IconButton>

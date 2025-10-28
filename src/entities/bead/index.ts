@@ -1,1 +1,1 @@
-export { BeadCanvas } from "./ui/bead-canvas";
+export { BeadPage } from "./ui/bead-page";

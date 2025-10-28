@@ -1,64 +1,58 @@
 import { runInBatch } from "./batch";
-import { collectSignal } from "./computed";
-
-export type SubscribeListenerFn<T> = (current: T) => void;
+import { addDependencies } from "./context";
 
 export interface Signal<T> {
   (): T;
   set: (newValue: T) => void;
-  subscribe: (listener: SubscribeListenerFn<T>) => () => void;
-  unsubscribe: (listener: SubscribeListenerFn<T>) => void;
+  subscribe: (listener: SignalListener<T>) => () => void;
+  unsubscribe: (listener: SignalListener<T>) => void;
   destroy: () => void;
 }
 
+export type SignalListener<T> = (newValue: T) => void;
+
 export interface SignalOptions<T> {
-  equals?: (current: T, next: T) => boolean;
+  equals?: (a: T, b: T) => boolean;
 }
 
-export function createSignal<T>(initialValue: T, options: SignalOptions<T> = {}): Signal<T> {
-  const listeners = new Set<SubscribeListenerFn<T>>();
+export function createSignal<T>(initialValue: T, options?: SignalOptions<T>): Signal<T> {
   let value = initialValue;
-
-  const equals = options.equals || Object.is;
-
-  function set(newValue: T) {
-    if (equals(value, newValue)) return;
-
-    value = newValue;
-
-    runInBatch(result, () => {
-      listeners.forEach((listener) => {
-        listener(newValue);
-      });
-    });
-  }
-
-  function unsubscribe(listener: SubscribeListenerFn<T>) {
-    listeners.delete(listener);
-  }
-
-  function subscribe(listener: SubscribeListenerFn<T>) {
-    listeners.add(listener);
-
-    return () => {
-      unsubscribe(listener);
-    };
-  }
-
-  function destroy() {
-    listeners.clear();
-  }
+  const equalsFn = options?.equals ?? Object.is;
+  const deps = new Set<SignalListener<T>>();
 
   const result = Object.assign(
     function get(): T {
-      collectSignal(result);
+      addDependencies(result);
       return value;
     },
     {
-      set,
-      subscribe,
-      unsubscribe,
-      destroy,
+      set: (newValue: T): void => {
+        if (equalsFn(value, newValue)) return;
+
+        value = newValue;
+
+        runInBatch(result, () => {
+          [...deps].forEach((listener) => {
+            listener(newValue);
+          });
+        });
+      },
+
+      subscribe: (listener: SignalListener<T>): (() => void) => {
+        deps.add(listener);
+
+        return () => {
+          deps.delete(listener);
+        };
+      },
+
+      unsubscribe: (listener: SignalListener<T>): void => {
+        deps.delete(listener);
+      },
+
+      destroy: (): void => {
+        deps.clear();
+      },
     }
   );
 

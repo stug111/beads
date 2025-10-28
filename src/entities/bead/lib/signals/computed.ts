@@ -1,81 +1,67 @@
-import { createSignal, type Signal, type SignalOptions, type SubscribeListenerFn } from "./signal";
+import { createSignal, type Signal, type SignalListener, type SignalOptions } from "./signal";
+import { activeContext } from "./context";
 
-const contextSignals: Set<Signal<unknown>>[] = [];
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function collectSignal(signal: Signal<any>) {
-  const currentContext = contextSignals[contextSignals.length - 1];
-
-  if (currentContext) {
-    currentContext.add(signal);
-  }
+export interface ComputedSignal<T> {
+  (): T;
+  deps: Set<Signal<any>>;
+  compute: () => T;
+  update: () => void;
+  subscribe: (listener: SignalListener<T>) => () => void;
+  unsubscribe: (listener: SignalListener<T>) => void;
+  destroy: () => void;
 }
 
-export function createComputed<T>(fn: () => T, options: SignalOptions<T> = {}) {
-  let _signal: Signal<T> | undefined;
-  let _deps = new Map<Signal<unknown>, () => void>();
+export function createComputed<T>(
+  fn: () => T,
+  options?: SignalOptions<T>
+): Omit<ComputedSignal<T>, "compute" | "update"> {
+  let _signal: Signal<T>;
 
   function signal(): Signal<T> {
-    return _signal ?? (_signal = createSignal<T>(compute(), options));
+    return _signal || (_signal = createSignal(result.compute(), options));
   }
 
-  function update() {
-    signal().set(compute());
-  }
-
-  function compute(): T {
-    const collectionSignals = new Set<Signal<unknown>>();
-    let result: T;
-
-    contextSignals.push(collectionSignals);
-
-    try {
-      result = fn();
-    } finally {
-      contextSignals.pop();
-    }
-
-    const nextDeps = new Map<Signal<unknown>, () => void>();
-
-    collectionSignals.forEach((dep) => {
-      if (_deps.has(dep)) {
-        nextDeps.set(dep, _deps.get(dep)!);
-      } else {
-        const unsubscribe = dep.subscribe(update);
-        nextDeps.set(dep, unsubscribe);
-      }
-    });
-
-    _deps.forEach((unsubscribe, dep) => {
-      if (!nextDeps.has(dep)) {
-        unsubscribe();
-      }
-    });
-
-    _deps = nextDeps;
-
-    return result;
-  }
-
-  function subscribe(listener: SubscribeListenerFn<T>) {
-    return signal().subscribe(listener);
-  }
-
-  function destroy() {
-    _deps.forEach((unsubscribe) => {
-      unsubscribe();
-    });
-    _deps.clear();
-    _signal?.destroy();
-  }
-
-  const result = Object.assign(
-    function computed(): T {
+  const result: ComputedSignal<T> = Object.assign(
+    function get(): T {
       return signal()();
     },
     {
-      subscribe,
-      destroy,
+      update: () => {
+        signal().set(result.compute());
+      },
+      compute: () => {
+        [...result.deps].forEach((dep) => {
+          dep.unsubscribe(result.update);
+        });
+        result.deps.clear();
+
+        let newValue: T;
+        activeContext.push(new Set<ComputedSignal<any>>([result]));
+
+        try {
+          newValue = fn();
+        } finally {
+          activeContext.pop();
+        }
+
+        return newValue;
+      },
+      subscribe: (listener: SignalListener<T>) => {
+        signal().subscribe(listener);
+
+        return () => {
+          signal().unsubscribe(listener);
+        };
+      },
+      unsubscribe: (listener: SignalListener<T>) => {
+        signal().unsubscribe(listener);
+        result.deps.delete(signal());
+      },
+      destroy: () => {
+        signal().destroy();
+        result.deps.clear();
+      },
+      deps: new Set<Signal<any>>(),
     }
   );
 

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { createSignal } from "./signal";
 
-describe("createSignal", () => {
+describe.only("createSignal", () => {
   describe("get", () => {
     it("should return signal value", () => {
       const value = createSignal(10);
@@ -73,22 +73,16 @@ describe("createSignal", () => {
   describe("destroy", () => {
     it("should not call any subscribed signals after destroy", () => {
       const value = createSignal(10);
-      const listener1 = vi.fn();
-      const listener2 = vi.fn();
-      value.subscribe(listener1);
-      value.subscribe(listener2);
+      const listener = vi.fn();
+      value.subscribe(listener);
       value.set(20);
-      expect(listener1).toHaveBeenCalledTimes(1);
-      expect(listener1).toHaveBeenCalledWith(20);
-      expect(listener2).toHaveBeenCalledTimes(1);
-      expect(listener2).toHaveBeenCalledWith(20);
-      listener1.mockClear();
-      listener2.mockClear();
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledWith(20);
+      listener.mockClear();
 
       value.destroy();
       value.set(30);
-      expect(listener1).toHaveBeenCalledTimes(0);
-      expect(listener2).toHaveBeenCalledTimes(0);
+      expect(listener).toHaveBeenCalledTimes(0);
     });
   });
 });

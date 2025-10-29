@@ -1,5 +1,5 @@
 import { ColumnsIcon, GearIcon, RowsIcon } from "@radix-ui/react-icons";
-import { Button, Flex, IconButton, Popover, Text, TextField } from "@radix-ui/themes";
+import { Button, Flex, IconButton, Popover, Text, TextField, Tooltip } from "@radix-ui/themes";
 import { useRef, type ChangeEvent } from "react";
 import { batch } from "../../lib/signals";
 import { changeColumns, changeRows, columns, rows } from "../../model/store";
@@ -27,11 +27,13 @@ export function Settings() {
 
   return (
     <Popover.Root>
-      <Popover.Trigger>
-        <IconButton size="3">
-          <GearIcon />
-        </IconButton>
-      </Popover.Trigger>
+      <Tooltip content="Настройки">
+        <Popover.Trigger>
+          <IconButton size="3">
+            <GearIcon />
+          </IconButton>
+        </Popover.Trigger>
+      </Tooltip>
       <Popover.Content>
         <Flex gap="4" direction="column" maxWidth="212px">
           <Flex direction="column">

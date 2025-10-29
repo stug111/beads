@@ -15,6 +15,7 @@ export const columns = createSignal<number>(30);
 export const colorPalette = createSignal<Set<string>>(new Set(["#cdb4db", "#ffc8dd", "#ffafcc", "#bde0fe", "#a2d2ff"]));
 export const gridTexture = createSignal<Texture>(Texture.EMPTY);
 export const showMirror = createSignal<boolean>(false);
+export const isClearPalette = createSignal<boolean>(false);
 
 export function changeColor(newColor: string) {
   color.set(newColor);

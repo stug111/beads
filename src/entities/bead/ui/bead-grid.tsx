@@ -2,7 +2,16 @@ import { Container, FederatedPointerEvent, Point, Sprite, Texture } from "pixi.j
 import { useCallback, useEffect, useRef } from "react";
 import { createBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
 import { beadHeight, beadWidth } from "../config/config";
-import { addToPalette, changeGridTexture, color, columns, mode, removeFromPalette, rows } from "../model/store";
+import {
+  addToPalette,
+  changeGridTexture,
+  color,
+  columns,
+  isClearPalette,
+  mode,
+  removeFromPalette,
+  rows,
+} from "../model/store";
 import { useSignal } from "../lib/signals";
 import { useApplication } from "@pixi/react";
 
@@ -106,6 +115,18 @@ export function BeadGrid() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    isClearPalette.subscribe((isClear) => {
+      if (isClear) {
+        cells.current.forEach((cell) => {
+          cell.tint = "#ffffff";
+        });
+        scheduleTextureUpdate();
+        isClearPalette.set(false);
+      }
+    });
+  }, [scheduleTextureUpdate]);
 
   return (
     <pixiContainer

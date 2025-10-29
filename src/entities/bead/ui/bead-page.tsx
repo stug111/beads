@@ -1,12 +1,23 @@
 import { BeadCanvas } from "./bead-canvas";
 import { Layout } from "./layout";
 import { Settings } from "./settings/settings";
-import { LootGrid } from "./settings/loop-grid";
+import { LoopGrid } from "./settings/loop-grid";
 import { ChangerMode } from "./settings/changer-mode";
+import { Flex } from "@radix-ui/themes";
+import { DownloadTemplate } from "./settings/download-template";
 
 export function BeadPage() {
   return (
-    <Layout topLeftSlot={<Settings />} topCenterSlot={<ChangerMode />} topRightSlot={<LootGrid />}>
+    <Layout
+      topLeftSlot={
+        <Flex gap="2" direction="column">
+          <Settings />
+          <LoopGrid />
+        </Flex>
+      }
+      topCenterSlot={<ChangerMode />}
+      topRightSlot={<DownloadTemplate />}
+    >
       <BeadCanvas />
     </Layout>
   );

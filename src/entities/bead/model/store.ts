@@ -1,4 +1,4 @@
-import { RenderTexture, Texture } from "pixi.js";
+import { Application, RenderTexture, Texture } from "pixi.js";
 import { createBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
 import { createSignal } from "../lib/signals";
 
@@ -6,6 +6,7 @@ export type Cell = {
   color: string;
 };
 
+export const application = createSignal<Application | undefined>(undefined);
 export const color = createSignal<string>("#000000");
 export const mode = createSignal<"drag" | "draw" | "erase">("drag");
 export const palette = createSignal<Map<BeadCellId, Cell>>(new Map());

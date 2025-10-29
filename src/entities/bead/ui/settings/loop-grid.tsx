@@ -3,7 +3,7 @@ import { IconButton, Tooltip } from "@radix-ui/themes";
 import { useSignal } from "../../lib/signals";
 import { showMirror } from "../../model/store";
 
-export function LootGrid() {
+export function LoopGrid() {
   const isLoop = useSignal(showMirror);
 
   const handleClick = () => {

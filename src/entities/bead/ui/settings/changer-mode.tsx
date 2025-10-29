@@ -1,13 +1,13 @@
 import { IconButton } from "@radix-ui/themes";
-import { changeMode, mode } from "../../model/store";
-import { EraserIcon, HandIcon, Pencil2Icon } from "@radix-ui/react-icons";
+import { mode } from "../../model/store";
+import { EraserIcon, HandIcon, Pencil2Icon, TransformIcon } from "@radix-ui/react-icons";
 import { useSignal } from "../../lib/signals";
 
 export function ChangerMode() {
   const currentMode = useSignal(mode);
 
-  const handleChangeMode = (mode: "drag" | "draw" | "erase") => () => {
-    changeMode(mode);
+  const handleChangeMode = (newMode: "drag" | "draw" | "erase" | "select") => () => {
+    mode.set(newMode);
   };
 
   return (
@@ -20,6 +20,9 @@ export function ChangerMode() {
       </IconButton>
       <IconButton type="button" onClick={handleChangeMode("erase")} highContrast={currentMode === "erase"}>
         <EraserIcon />
+      </IconButton>
+      <IconButton type="button" onClick={handleChangeMode("select")} highContrast={currentMode === "select"}>
+        <TransformIcon />
       </IconButton>
     </div>
   );

@@ -29,7 +29,7 @@ export function BeadCanvas() {
 
   return (
     <div ref={ref} className="w-full min-h-dvh overflow-hidden">
-      <Application resizeTo={ref} background="#ffffff" onInit={handleInitApp}>
+      <Application resizeTo={ref} background="#ffffff" onInit={handleInitApp} eventMode="static">
         {initialized && (
           <Viewport>
             <pixiContainer>

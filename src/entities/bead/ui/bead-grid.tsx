@@ -14,6 +14,7 @@ import {
 } from "../model/store";
 import { useSignal } from "../lib/signals";
 import { useApplication } from "@pixi/react";
+import { useSelectArea } from "../lib/use-select-area";
 
 function getCellFromPointer(point: Point, cols: number, rows: number): { x: number; y: number } | null {
   const row = Math.floor(point.y / beadHeight);
@@ -31,6 +32,7 @@ export function BeadGrid() {
   const currentRows = useSignal(rows);
   const currentColumns = useSignal(columns);
   const { app } = useApplication();
+  useSelectArea();
 
   const ref = useRef<Container>(null);
   const cells = useRef<Map<BeadCellId, Sprite>>(new Map());

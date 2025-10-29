@@ -8,7 +8,7 @@ export type Cell = {
 
 export const application = createSignal<Application | undefined>(undefined);
 export const color = createSignal<string>("#000000");
-export const mode = createSignal<"drag" | "draw" | "erase">("drag");
+export const mode = createSignal<"drag" | "draw" | "erase" | "select">("drag");
 export const palette = createSignal<Map<BeadCellId, Cell>>(new Map());
 export const rows = createSignal<number>(10);
 export const columns = createSignal<number>(30);
@@ -19,10 +19,6 @@ export const isClearPalette = createSignal<boolean>(false);
 
 export function changeColor(newColor: string) {
   color.set(newColor);
-}
-
-export function changeMode(newMode: "drag" | "draw" | "erase") {
-  mode.set(newMode);
 }
 
 export function changeRows(newRows: number) {

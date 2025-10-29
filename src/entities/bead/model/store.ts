@@ -1,3 +1,4 @@
+import { RenderTexture, Texture } from "pixi.js";
 import { createBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
 import { createSignal } from "../lib/signals";
 
@@ -11,6 +12,8 @@ export const palette = createSignal<Map<BeadCellId, Cell>>(new Map());
 export const rows = createSignal<number>(10);
 export const columns = createSignal<number>(30);
 export const colorPalette = createSignal<Set<string>>(new Set(["#cdb4db", "#ffc8dd", "#ffafcc", "#bde0fe", "#a2d2ff"]));
+export const gridTexture = createSignal<Texture>(Texture.EMPTY);
+export const showMirror = createSignal<boolean>(false);
 
 export function changeColor(newColor: string) {
   color.set(newColor);
@@ -26,6 +29,10 @@ export function changeRows(newRows: number) {
 
 export function changeColumns(newColumns: number) {
   columns.set(newColumns);
+}
+
+export function changeGridTexture(newTexture: Texture | RenderTexture) {
+  gridTexture.set(newTexture);
 }
 
 export function addColorToPalette(newColor: string) {

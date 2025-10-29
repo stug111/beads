@@ -1,9 +1,10 @@
 import { Container, FederatedPointerEvent, Point, Sprite, Texture } from "pixi.js";
-import { useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { createBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
 import { beadHeight, beadWidth } from "../config/config";
-import { addToPalette, color, columns, mode, removeFromPalette, rows } from "../model/store";
+import { addToPalette, changeGridTexture, color, columns, mode, removeFromPalette, rows } from "../model/store";
 import { useSignal } from "../lib/signals";
+import { useApplication } from "@pixi/react";
 
 function getCellFromPointer(point: Point, cols: number, rows: number): { x: number; y: number } | null {
   const row = Math.floor(point.y / beadHeight);
@@ -20,10 +21,31 @@ function getCellFromPointer(point: Point, cols: number, rows: number): { x: numb
 export function BeadGrid() {
   const currentRows = useSignal(rows);
   const currentColumns = useSignal(columns);
+  const { app } = useApplication();
 
   const ref = useRef<Container>(null);
   const cells = useRef<Map<BeadCellId, Sprite>>(new Map());
   const isDrawing = useRef(false);
+  const pendingUpdate = useRef<number | null>(null);
+
+  const updateRenderTexture = useCallback(() => {
+    if (!ref.current) return;
+
+    const texture = app.renderer.generateTexture({
+      target: ref.current,
+    });
+
+    changeGridTexture(texture);
+  }, [app.renderer]);
+
+  const scheduleTextureUpdate = useCallback(() => {
+    if (pendingUpdate.current) return;
+
+    pendingUpdate.current = requestAnimationFrame(() => {
+      updateRenderTexture();
+      pendingUpdate.current = null;
+    });
+  }, [updateRenderTexture]);
 
   const handleDraw = (point: Point) => {
     const cell = getCellFromPointer(point, currentColumns, currentRows);
@@ -41,6 +63,8 @@ export function BeadGrid() {
       addToPalette(currentColor, cell.x, cell.y);
       bead.tint = currentColor;
     }
+
+    scheduleTextureUpdate();
   };
 
   const handlePointerMove = (e: FederatedPointerEvent) => {
@@ -69,6 +93,19 @@ export function BeadGrid() {
   const handlePointerUp = () => {
     isDrawing.current = false;
   };
+
+  useEffect(() => {
+    updateRenderTexture();
+  }, [updateRenderTexture]);
+
+  useEffect(() => {
+    return () => {
+      if (pendingUpdate.current) {
+        cancelAnimationFrame(pendingUpdate.current);
+        pendingUpdate.current = null;
+      }
+    };
+  }, []);
 
   return (
     <pixiContainer

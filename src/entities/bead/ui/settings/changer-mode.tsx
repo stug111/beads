@@ -1,7 +1,7 @@
 import { IconButton } from "@radix-ui/themes";
-import { changeMode, mode } from "../model/store";
+import { changeMode, mode } from "../../model/store";
 import { EraserIcon, HandIcon, Pencil2Icon } from "@radix-ui/react-icons";
-import { useSignal } from "../lib/signals";
+import { useSignal } from "../../lib/signals";
 
 export function ChangerMode() {
   const currentMode = useSignal(mode);

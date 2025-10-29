@@ -1,10 +1,10 @@
 import { ColumnsIcon, GearIcon, RowsIcon } from "@radix-ui/react-icons";
 import { Button, Flex, IconButton, Popover, Text, TextField } from "@radix-ui/themes";
 import { useRef, type ChangeEvent } from "react";
-import { batch } from "../lib/signals";
-import { changeColumns, changeRows, columns, rows } from "../model/store";
-import { ColorPicker } from "./color-pallet/color-picker";
-import { ColorList } from "./color-pallet/color-list";
+import { batch } from "../../lib/signals";
+import { changeColumns, changeRows, columns, rows } from "../../model/store";
+import { ColorPicker } from "./color-picker";
+import { ColorList } from "./color-list";
 
 export function Settings() {
   const rowsRef = useRef<number>(rows());

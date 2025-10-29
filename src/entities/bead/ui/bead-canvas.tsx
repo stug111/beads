@@ -8,6 +8,7 @@ import manifest from "../../../manifest.json";
 // import { cols, rows } from "../config/config";
 import { Viewport as PixiViewport } from "pixi-viewport";
 import { Viewport } from "./vewport";
+import { MirrorGrid } from "./mirror-grid";
 
 extend({ Container, Sprite, Text, Viewport: PixiViewport });
 
@@ -32,7 +33,9 @@ export function BeadCanvas() {
             <pixiContainer>
               {/* <Axis direction="horizontal" count={cols} x={40} y={20} /> */}
               <pixiContainer x={40} y={40}>
+                <MirrorGrid position="left" />
                 <BeadGrid />
+                <MirrorGrid position="right" />
                 {/* <BeadRule /> */}
               </pixiContainer>
               {/* <Axis direction="vertical" count={rows} x={20} y={40} /> */}

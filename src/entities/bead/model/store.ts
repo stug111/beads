@@ -1,6 +1,6 @@
 import { Application, Sprite, Texture } from "pixi.js";
 import { createBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
-import { createSignal } from "../lib/signals";
+import { createSignal } from "../../../shared/lib";
 
 export type Cell = {
   color: string;

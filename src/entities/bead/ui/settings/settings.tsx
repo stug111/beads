@@ -1,10 +1,10 @@
 import { ColumnsIcon, GearIcon, RowsIcon } from "@radix-ui/react-icons";
 import { Button, Flex, IconButton, Popover, Text, TextField, Tooltip } from "@radix-ui/themes";
 import { useRef, type ChangeEvent } from "react";
-import { batch } from "../../lib/signals";
 import { columns, rows } from "../../model/store";
 import { ColorPicker } from "./color-picker";
 import { ColorList } from "./color-list";
+import { batch } from "../../../../shared/lib";
 
 export function Settings() {
   const rowsRef = useRef<number>(rows());

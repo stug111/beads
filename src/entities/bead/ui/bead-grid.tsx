@@ -15,9 +15,9 @@ import {
   removeFromPalette,
   rows,
 } from "../model/store";
-import { useSignal } from "../lib/signals";
 import { useApplication } from "@pixi/react";
 import { BeadSelectionHighlight } from "./bead-selection-highlight";
+import { useSignal } from "../../../shared/lib";
 
 function getCellFromPointer(point: Point, cols: number, rows: number): { x: number; y: number } | null {
   const row = Math.floor(point.y / beadHeight);

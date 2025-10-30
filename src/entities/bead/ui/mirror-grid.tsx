@@ -1,5 +1,5 @@
+import { useSignal } from "../../../shared/lib";
 import { beadHeight, beadWidth } from "../config/config";
-import { useSignal } from "../lib/signals";
 import { columns, gridTexture, rows, showMirror } from "../model/store";
 
 interface MirrorGridProps {

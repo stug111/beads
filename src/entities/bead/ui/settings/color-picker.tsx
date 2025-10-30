@@ -1,6 +1,6 @@
 import type { ChangeEvent } from "react";
 import { color } from "../../model/store";
-import { useSignal } from "../../lib/signals";
+import { useSignal } from "../../../../shared/lib";
 
 export function ColorPicker() {
   const activeColor = useSignal(color);

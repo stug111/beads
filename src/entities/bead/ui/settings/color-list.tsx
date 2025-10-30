@@ -1,6 +1,6 @@
 import { Box, Flex } from "@radix-ui/themes";
-import { useSignal } from "../../lib/signals";
 import { color, colorPalette } from "../../model/store";
+import { useSignal } from "../../../../shared/lib";
 
 export function ColorList() {
   const colors = useSignal(colorPalette);

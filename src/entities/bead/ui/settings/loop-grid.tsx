@@ -1,7 +1,7 @@
 import { LoopIcon } from "@radix-ui/react-icons";
 import { IconButton, Tooltip } from "@radix-ui/themes";
-import { useSignal } from "../../lib/signals";
 import { showMirror } from "../../model/store";
+import { useSignal } from "../../../../shared/lib";
 
 export function LoopGrid() {
   const isLoop = useSignal(showMirror);

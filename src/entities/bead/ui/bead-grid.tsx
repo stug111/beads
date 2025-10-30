@@ -1,20 +1,23 @@
-import { Container, FederatedPointerEvent, Point, Sprite, Texture } from "pixi.js";
+import { Container, FederatedPointerEvent, Point, Texture } from "pixi.js";
 import { useCallback, useEffect, useRef } from "react";
 import { createBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
 import { beadHeight, beadWidth } from "../config/config";
 import {
+  addCell,
   addToPalette,
-  changeGridTexture,
+  cells,
   color,
   columns,
+  gridTexture,
   isClearPalette,
   mode,
+  removeCell,
   removeFromPalette,
   rows,
 } from "../model/store";
 import { useSignal } from "../lib/signals";
 import { useApplication } from "@pixi/react";
-import { useSelectArea } from "../lib/use-select-area";
+import { BeadSelectionHighlight } from "./bead-selection-highlight";
 
 function getCellFromPointer(point: Point, cols: number, rows: number): { x: number; y: number } | null {
   const row = Math.floor(point.y / beadHeight);
@@ -32,10 +35,8 @@ export function BeadGrid() {
   const currentRows = useSignal(rows);
   const currentColumns = useSignal(columns);
   const { app } = useApplication();
-  useSelectArea();
 
   const ref = useRef<Container>(null);
-  const cells = useRef<Map<BeadCellId, Sprite>>(new Map());
   const isDrawing = useRef(false);
   const pendingUpdate = useRef<number | null>(null);
 
@@ -46,7 +47,7 @@ export function BeadGrid() {
       target: ref.current,
     });
 
-    changeGridTexture(texture);
+    gridTexture.set(texture);
   }, [app.renderer]);
 
   const scheduleTextureUpdate = useCallback(() => {
@@ -62,7 +63,7 @@ export function BeadGrid() {
     const cell = getCellFromPointer(point, currentColumns, currentRows);
     if (cell === null) return;
 
-    const bead = cells.current.get(createBeadCellId(cell.x, cell.y));
+    const bead = cells().get(createBeadCellId(cell.x, cell.y));
     if (!bead) return;
 
     const currentColor = color();
@@ -121,7 +122,7 @@ export function BeadGrid() {
   useEffect(() => {
     isClearPalette.subscribe((isClear) => {
       if (isClear) {
-        cells.current.forEach((cell) => {
+        cells().forEach((cell) => {
           cell.tint = "#ffffff";
         });
         scheduleTextureUpdate();
@@ -156,15 +157,16 @@ export function BeadGrid() {
               height={beadHeight}
               ref={(sprite) => {
                 if (sprite) {
-                  cells.current.set(cellId, sprite);
+                  addCell(cellId, sprite);
                 } else {
-                  cells.current.delete(cellId);
+                  removeCell(cellId);
                 }
               }}
             />
           );
         });
       })}
+      <BeadSelectionHighlight />
     </pixiContainer>
   );
 }

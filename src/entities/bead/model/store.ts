@@ -1,4 +1,4 @@
-import { Application, RenderTexture, Texture } from "pixi.js";
+import { Application, Sprite, Texture } from "pixi.js";
 import { createBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
 import { createSignal } from "../lib/signals";
 
@@ -16,21 +16,20 @@ export const colorPalette = createSignal<Set<string>>(new Set(["#cdb4db", "#ffc8
 export const gridTexture = createSignal<Texture>(Texture.EMPTY);
 export const showMirror = createSignal<boolean>(false);
 export const isClearPalette = createSignal<boolean>(false);
+export const cells = createSignal<Map<BeadCellId, Sprite>>(new Map());
+export const selectedCells = createSignal<Set<BeadCellId>>(new Set());
 
-export function changeColor(newColor: string) {
-  color.set(newColor);
+export function addCell(cellId: BeadCellId, sprite: Sprite) {
+  const currentCells = cells();
+  currentCells.set(cellId, sprite);
+  cells.set(currentCells);
 }
 
-export function changeRows(newRows: number) {
-  rows.set(newRows);
-}
-
-export function changeColumns(newColumns: number) {
-  columns.set(newColumns);
-}
-
-export function changeGridTexture(newTexture: Texture | RenderTexture) {
-  gridTexture.set(newTexture);
+export function removeCell(cellId: BeadCellId) {
+  const currentCells = cells();
+  if (!currentCells.has(cellId)) return;
+  currentCells.delete(cellId);
+  cells.set(currentCells);
 }
 
 export function addColorToPalette(newColor: string) {
@@ -67,4 +66,12 @@ export function removeFromPalette(x: number, y: number) {
 
   currentPalette.delete(cellId);
   palette.set(currentPalette);
+}
+
+export function setSelectedCells(cellIds: Set<BeadCellId>) {
+  selectedCells.set(cellIds);
+}
+
+export function clearSelectedCells() {
+  selectedCells.set(new Set());
 }

@@ -1,7 +1,20 @@
 import { useApplication } from "@pixi/react";
-import { Graphics } from "pixi.js";
+import { Bounds, Graphics } from "pixi.js";
 import { useEffect, useRef } from "react";
-import { mode } from "../model/store";
+import { cells, mode, setSelectedCells } from "../model/store";
+import type { BeadCellId } from "./bead-cell-id";
+
+function checkIntersection(
+  beadBounds: Bounds,
+  selectionBounds: { x: number; y: number; width: number; height: number }
+): boolean {
+  return !(
+    beadBounds.x + beadBounds.width < selectionBounds.x ||
+    beadBounds.x > selectionBounds.x + selectionBounds.width ||
+    beadBounds.y + beadBounds.height < selectionBounds.y ||
+    beadBounds.y > selectionBounds.y + selectionBounds.height
+  );
+}
 
 export function useSelectArea() {
   const isTapped = useRef(false);
@@ -25,7 +38,7 @@ export function useSelectArea() {
     });
 
     app.stage.on("pointermove", (event) => {
-      if (!isTapped.current || !selectionGraphics.current) return;
+      if (!isTapped.current || !selectionGraphics.current || mode() !== "select") return;
 
       const pos = event.getLocalPosition(app.stage);
       const graphics = selectionGraphics.current;
@@ -40,6 +53,20 @@ export function useSelectArea() {
       graphics.rect(x, y, width, height);
       graphics.fill({ color: 0x0000ff, alpha: 0.2 });
       graphics.stroke({ color: 0x0000ff, width: 2, alpha: 0.8 });
+
+      const selectionBounds = { x, y, width, height };
+      const selectedIds = new Set<BeadCellId>();
+      const allCells = cells();
+
+      allCells.forEach((sprite, cellId) => {
+        const beadBounds = sprite.getBounds();
+
+        if (checkIntersection(beadBounds, selectionBounds)) {
+          selectedIds.add(cellId);
+        }
+      });
+
+      setSelectedCells(selectedIds);
     });
 
     app.stage.on("pointerup", () => {

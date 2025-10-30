@@ -1,13 +1,13 @@
 import { Box, Flex } from "@radix-ui/themes";
 import { useSignal } from "../../lib/signals";
-import { changeColor, color, colorPalette } from "../../model/store";
+import { color, colorPalette } from "../../model/store";
 
 export function ColorList() {
   const colors = useSignal(colorPalette);
   const activeColor = useSignal(color);
 
-  const handleColorClick = (color: string) => () => {
-    changeColor(color);
+  const handleColorClick = (newColor: string) => () => {
+    color.set(newColor);
   };
 
   return (

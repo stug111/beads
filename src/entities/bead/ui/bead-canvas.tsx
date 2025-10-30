@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Application, extend } from "@pixi/react";
 import { BeadGrid } from "./bead-grid";
-import { Assets, Container, Text, Sprite, Application as PixiApplication } from "pixi.js";
+import { Assets, Container, Text, Sprite, Application as PixiApplication, Graphics } from "pixi.js";
 import manifest from "../../../manifest.json";
 // import { BeadRule } from "./bead-rule";
 // import { Axis } from "./axis";
@@ -11,7 +11,7 @@ import { Viewport } from "./vewport";
 import { MirrorGrid } from "./mirror-grid";
 import { application } from "../model/store";
 
-extend({ Container, Sprite, Text, Viewport: PixiViewport });
+extend({ Container, Sprite, Text, Viewport: PixiViewport, Graphics });
 
 export function BeadCanvas() {
   const ref = useRef<HTMLDivElement>(null);

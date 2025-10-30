@@ -2,7 +2,7 @@ import { ColumnsIcon, GearIcon, RowsIcon } from "@radix-ui/react-icons";
 import { Button, Flex, IconButton, Popover, Text, TextField, Tooltip } from "@radix-ui/themes";
 import { useRef, type ChangeEvent } from "react";
 import { batch } from "../../lib/signals";
-import { changeColumns, changeRows, columns, rows } from "../../model/store";
+import { columns, rows } from "../../model/store";
 import { ColorPicker } from "./color-picker";
 import { ColorList } from "./color-list";
 
@@ -12,8 +12,8 @@ export function Settings() {
 
   const handleApplySettings = () => {
     batch(() => {
-      changeRows(rowsRef.current);
-      changeColumns(columnsRef.current);
+      rows.set(rowsRef.current);
+      columns.set(columnsRef.current);
     });
   };
 

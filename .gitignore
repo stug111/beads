@@ -13,6 +13,7 @@ dist-ssr
 dev-dist
 *.local
 .assetpack
+.env
 
 # Editor directories and files
 .vscode/*

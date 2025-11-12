@@ -4,16 +4,18 @@ import { createBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
 import { beadHeight, beadWidth } from "../config/config";
 import {
   addCell,
-  addToPalette,
+  addToTemplate,
   cells,
   color,
   columns,
   gridTexture,
   isClearPalette,
+  isNewPalette,
   mode,
   removeCell,
-  removeFromPalette,
+  removeFromTemplate,
   rows,
+  template,
 } from "../model/store";
 import { useApplication } from "@pixi/react";
 import { BeadSelectionHighlight } from "./bead-selection-highlight";
@@ -69,10 +71,10 @@ export function BeadGrid() {
     const currentColor = color();
 
     if (mode() === "erase") {
-      removeFromPalette(cell.x, cell.y);
+      removeFromTemplate(cell.x, cell.y);
       bead.tint = "#ffffff";
     } else {
-      addToPalette(currentColor, cell.x, cell.y);
+      addToTemplate(currentColor, cell.x, cell.y);
       bead.tint = currentColor;
     }
 
@@ -131,6 +133,18 @@ export function BeadGrid() {
     });
   }, [scheduleTextureUpdate]);
 
+  useEffect(() => {
+    isNewPalette.subscribe((isNew) => {
+      if (!isNew) return;
+
+      cells().forEach((cell, cellId) => {
+        const beadSettings = template().get(cellId);
+        cell.tint = beadSettings?.color || "#ffffff";
+      });
+      isNewPalette.set(false);
+    });
+  }, []);
+
   return (
     <pixiContainer
       label="Bead Grid"
@@ -146,6 +160,7 @@ export function BeadGrid() {
 
         return Array.from({ length: currentColumns }).map((_, col) => {
           const cellId: BeadCellId = createBeadCellId(row, col);
+          const beadSettings = template().get(cellId);
           return (
             <pixiSprite
               label="Bead Cell"
@@ -155,6 +170,7 @@ export function BeadGrid() {
               texture={Texture.from("bead.png")}
               width={beadWidth}
               height={beadHeight}
+              tint={beadSettings?.color || undefined}
               ref={(sprite) => {
                 if (sprite) {
                   addCell(cellId, sprite);

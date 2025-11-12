@@ -1,6 +1,8 @@
 import { Application, Sprite, Texture } from "pixi.js";
 import { createBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
-import { createSignal } from "../../../shared/lib";
+import { createEffect, createSignal } from "../../../shared/lib";
+import type { Template } from "../../../shared/config/db/schema";
+import { db } from "../../../shared/config";
 
 export type Cell = {
   color: string;
@@ -9,15 +11,23 @@ export type Cell = {
 export const application = createSignal<Application | undefined>(undefined);
 export const color = createSignal<string>("#000000");
 export const mode = createSignal<"drag" | "draw" | "erase" | "select">("drag");
-export const palette = createSignal<Map<BeadCellId, Cell>>(new Map());
+export const template = createSignal<Map<BeadCellId, Cell>>(new Map());
 export const rows = createSignal<number>(10);
 export const columns = createSignal<number>(30);
 export const colorPalette = createSignal<Set<string>>(new Set(["#cdb4db", "#ffc8dd", "#ffafcc", "#bde0fe", "#a2d2ff"]));
 export const gridTexture = createSignal<Texture>(Texture.EMPTY);
 export const showMirror = createSignal<boolean>(false);
 export const isClearPalette = createSignal<boolean>(false);
+export const isNewPalette = createSignal<boolean>(false);
 export const cells = createSignal<Map<BeadCellId, Sprite>>(new Map());
 export const selectedCells = createSignal<Set<BeadCellId>>(new Set());
+export const templates = createSignal<Template[]>([]);
+
+createEffect(async () => {
+  await db.query.templates.findMany().then((data) => {
+    templates.set(data);
+  });
+});
 
 export function addCell(cellId: BeadCellId, sprite: Sprite) {
   const currentCells = cells();
@@ -48,24 +58,24 @@ export function removeColorFromPalette(color: string) {
   colorPalette.set(currentPalette);
 }
 
-export function addToPalette(color: string, x: number, y: number) {
+export function addToTemplate(color: string, x: number, y: number) {
   const cellId = createBeadCellId(x, y);
-  const currentPalette = palette();
+  const currentPalette = template();
 
   if (currentPalette.has(cellId) && currentPalette.get(cellId)?.color === color) return;
 
   currentPalette.set(cellId, { color });
-  palette.set(currentPalette);
+  template.set(currentPalette);
 }
 
-export function removeFromPalette(x: number, y: number) {
+export function removeFromTemplate(x: number, y: number) {
   const cellId = createBeadCellId(x, y);
-  const currentPalette = palette();
+  const currentPalette = template();
 
   if (!currentPalette.has(cellId)) return;
 
   currentPalette.delete(cellId);
-  palette.set(currentPalette);
+  template.set(currentPalette);
 }
 
 export function setSelectedCells(cellIds: Set<BeadCellId>) {

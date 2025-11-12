@@ -6,6 +6,8 @@ import { ChangerMode } from "./settings/changer-mode";
 import { Flex } from "@radix-ui/themes";
 import { DownloadTemplate } from "./settings/download-template";
 import { ClearTemplate } from "./settings/clear-template";
+import { SaveTemplate } from "./settings/save-template";
+import { TemplatesList } from "./settings/templates-list";
 
 export function BeadPage() {
   return (
@@ -18,7 +20,13 @@ export function BeadPage() {
         </Flex>
       }
       topCenterSlot={<ChangerMode />}
-      topRightSlot={<DownloadTemplate />}
+      topRightSlot={
+        <Flex gap="2" direction="column">
+          <DownloadTemplate />
+          <SaveTemplate />
+          <TemplatesList />
+        </Flex>
+      }
     >
       <BeadCanvas />
     </Layout>

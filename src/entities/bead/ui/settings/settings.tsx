@@ -1,32 +1,41 @@
 import { ColumnsIcon, GearIcon, RowsIcon } from "@radix-ui/react-icons";
 import { Button, Flex, IconButton, Popover, Text, TextField, Tooltip } from "@radix-ui/themes";
-import { useRef, type ChangeEvent } from "react";
+import { type ChangeEvent, useState } from "react";
 import { columns, rows } from "../../model/store";
 import { ColorPicker } from "./color-picker";
 import { ColorList } from "./color-list";
-import { batch } from "../../../../shared/lib";
+import { batch, useSignal } from "../../../../shared/lib";
 
 export function Settings() {
-  const rowsRef = useRef<number>(rows());
-  const columnsRef = useRef<number>(columns());
+  const currentRows = useSignal(rows);
+  const currentColumns = useSignal(columns);
+  const [localRows, setLocalRows] = useState(currentRows);
+  const [localColumns, setLocalColumns] = useState(currentColumns);
 
   const handleApplySettings = () => {
     batch(() => {
-      rows.set(rowsRef.current);
-      columns.set(columnsRef.current);
+      rows.set(localRows);
+      columns.set(localColumns);
     });
   };
 
   const handleRowsChange = (e: ChangeEvent<HTMLInputElement>) => {
-    rowsRef.current = Number(e.target.value);
+    setLocalRows(Number(e.target.value));
   };
 
   const handleColumnsChange = (value: ChangeEvent<HTMLInputElement>) => {
-    columnsRef.current = Number(value.target.value);
+    setLocalColumns(Number(value.target.value));
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    if (open) {
+      setLocalRows(currentRows);
+      setLocalColumns(currentColumns);
+    }
   };
 
   return (
-    <Popover.Root>
+    <Popover.Root onOpenChange={handleOpenChange}>
       <Tooltip content="Настройки">
         <Popover.Trigger>
           <IconButton size="3">
@@ -38,7 +47,7 @@ export function Settings() {
         <Flex gap="4" direction="column" maxWidth="212px">
           <Flex direction="column">
             <Text as="label">Кол-во строк:</Text>
-            <TextField.Root defaultValue={rowsRef.current} onChange={handleRowsChange} type="number">
+            <TextField.Root value={String(localRows)} onChange={handleRowsChange} type="number">
               <TextField.Slot>
                 <RowsIcon />
               </TextField.Slot>
@@ -46,7 +55,7 @@ export function Settings() {
           </Flex>
           <Flex direction="column">
             <Text as="label">Кол-во столбцов:</Text>
-            <TextField.Root defaultValue={columnsRef.current} onChange={handleColumnsChange} type="number">
+            <TextField.Root value={String(localColumns)} onChange={handleColumnsChange} type="number">
               <TextField.Slot>
                 <ColumnsIcon />
               </TextField.Slot>

@@ -10,7 +10,6 @@ import {
   columns,
   gridTexture,
   isClearPalette,
-  isGridResized,
   isNewPalette,
   mode,
   removeCell,
@@ -111,7 +110,7 @@ export function BeadGrid() {
 
   useEffect(() => {
     updateRenderTexture();
-  }, [updateRenderTexture]);
+  }, [updateRenderTexture, currentRows, currentColumns]);
 
   useEffect(() => {
     return () => {
@@ -138,32 +137,15 @@ export function BeadGrid() {
     isNewPalette.subscribe((isNew) => {
       if (!isNew) return;
 
-      requestAnimationFrame(() => {
-        cells().forEach((cell, cellId) => {
-          const beadSettings = template().get(cellId);
-          cell.tint = beadSettings?.color || "#ffffff";
-        });
-
-        requestAnimationFrame(() => {
-          updateRenderTexture();
-        });
+      cells().forEach((cell, cellId) => {
+        const beadSettings = template().get(cellId);
+        cell.tint = beadSettings?.color || "#ffffff";
       });
 
+      scheduleTextureUpdate();
       isNewPalette.set(false);
     });
-  }, [updateRenderTexture]);
-
-  useEffect(() => {
-    isGridResized.subscribe((isResized) => {
-      if (!isResized) return;
-
-      requestAnimationFrame(() => {
-        updateRenderTexture();
-      });
-
-      isGridResized.set(false);
-    });
-  }, [updateRenderTexture]);
+  }, [scheduleTextureUpdate]);
 
   return (
     <pixiContainer

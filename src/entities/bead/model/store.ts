@@ -19,7 +19,6 @@ export const gridTexture = createSignal<Texture>(Texture.EMPTY);
 export const showMirror = createSignal<boolean>(false);
 export const isClearPalette = createSignal<boolean>(false);
 export const isNewPalette = createSignal<boolean>(false);
-export const isGridResized = createSignal<boolean>(false);
 export const cells = createSignal<Map<BeadCellId, Sprite>>(new Map());
 export const selectedCells = createSignal<Set<BeadCellId>>(new Set());
 export const templates = createSignal<Template[]>([]);

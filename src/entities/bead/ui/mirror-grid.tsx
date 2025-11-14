@@ -1,6 +1,6 @@
 import { useSignal } from "../../../shared/lib";
-import { beadHeight, beadWidth } from "../config/config";
-import { columns, gridTexture, rows, showMirror } from "../model/store";
+import { beadWidth } from "../config/config";
+import { gridTexture, showMirror } from "../model/store";
 
 interface MirrorGridProps {
   position: "left" | "right";
@@ -8,19 +8,14 @@ interface MirrorGridProps {
 
 export function MirrorGrid({ position }: MirrorGridProps) {
   const texture = useSignal(gridTexture);
-  const rowsCount = useSignal(rows);
-  const columnsCount = useSignal(columns);
   const isShowMirror = useSignal(showMirror);
-
-  const gridWidth = columnsCount * beadWidth;
-  const gridHeight = rowsCount * beadHeight;
 
   return (
     <pixiSprite
       texture={texture}
-      x={position === "left" ? -gridWidth + beadWidth / 2 : gridWidth}
-      width={gridWidth}
-      height={gridHeight}
+      x={position === "left" ? -texture.width + beadWidth / 2 : texture.width - beadWidth / 2}
+      width={texture.width}
+      height={texture.height}
       alpha={isShowMirror ? 0.4 : 0}
     />
   );

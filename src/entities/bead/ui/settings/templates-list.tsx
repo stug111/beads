@@ -42,8 +42,8 @@ export function TemplatesList() {
 
         <Grid columns="3" gap="3">
           {currentTemplates.map((template) => (
-            <Box key={template.id} onClick={handleClickTemplate(template.id)} className="cursor-pointer group">
-              <Card size="2">
+            <Box key={template.id} className="group relative">
+              <Card size="2" onClick={handleClickTemplate(template.id)} className="cursor-pointer">
                 <Inset clip="padding-box" side="top" pb="current">
                   <img
                     src={template.preview}
@@ -56,20 +56,20 @@ export function TemplatesList() {
                       backgroundColor: "var(--gray-5)",
                     }}
                   />
-                  <Box
-                    position="absolute"
-                    top="0"
-                    right="0"
-                    m="2"
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                  >
-                    <RemoveTemplate templateId={template.id} />
-                  </Box>
                 </Inset>
                 <Text as="p" size="3">
                   {template.name}
                 </Text>
               </Card>
+              <Box
+                position="absolute"
+                top="0"
+                right="0"
+                m="2"
+                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              >
+                <RemoveTemplate templateId={template.id} />
+              </Box>
             </Box>
           ))}
         </Grid>

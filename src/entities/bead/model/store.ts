@@ -1,5 +1,5 @@
 import { Application, Sprite, Texture } from "pixi.js";
-import { createBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
+import { createBeadCellId, parseBeadCellId, type BeadCellId } from "../lib/bead-cell-id";
 import { createEffect, createSignal } from "../../../shared/lib";
 import type { Template } from "../../../shared/config/db/schema";
 import { db } from "../../../shared/config";
@@ -84,4 +84,24 @@ export function setSelectedCells(cellIds: Set<BeadCellId>) {
 
 export function clearSelectedCells() {
   selectedCells.set(new Set());
+}
+
+export function clearOutOfBoundsCells(maxRows: number, maxCols: number) {
+  const currentTemplate = template();
+  const cellsToDelete: BeadCellId[] = [];
+
+  currentTemplate.forEach((_, cellId) => {
+    const [row, col] = parseBeadCellId(cellId);
+    if (row >= maxRows || col >= maxCols) {
+      cellsToDelete.push(cellId);
+    }
+  });
+
+  cellsToDelete.forEach((cellId) => {
+    currentTemplate.delete(cellId);
+  });
+
+  if (cellsToDelete.length > 0) {
+    template.set(currentTemplate);
+  }
 }

@@ -141,9 +141,10 @@ export function BeadGrid() {
         const beadSettings = template().get(cellId);
         cell.tint = beadSettings?.color || "#ffffff";
       });
+      scheduleTextureUpdate();
       isNewPalette.set(false);
     });
-  }, []);
+  }, [scheduleTextureUpdate]);
 
   return (
     <pixiContainer

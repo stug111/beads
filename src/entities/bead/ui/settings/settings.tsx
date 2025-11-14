@@ -1,7 +1,7 @@
 import { ColumnsIcon, GearIcon, RowsIcon } from "@radix-ui/react-icons";
 import { Button, Flex, IconButton, Popover, Text, TextField, Tooltip } from "@radix-ui/themes";
 import { type ChangeEvent, useState } from "react";
-import { clearOutOfBoundsCells, columns, rows } from "../../model/store";
+import { clearOutOfBoundsCells, columns, isGridResized, rows } from "../../model/store";
 import { ColorPicker } from "./color-picker";
 import { ColorList } from "./color-list";
 import { batch, useSignal } from "../../../../shared/lib";
@@ -17,6 +17,7 @@ export function Settings() {
       rows.set(localRows);
       columns.set(localColumns);
       clearOutOfBoundsCells(localRows, localColumns);
+      isGridResized.set(true);
     });
   };
 

@@ -11,10 +11,7 @@ export interface ComputedSignal<T> {
   destroy: () => void;
 }
 
-export function createComputed<T>(
-  fn: () => T,
-  options?: SignalOptions<T>
-): Omit<ComputedSignal<T>, "compute" | "update"> {
+export function createComputed<T>(fn: () => T, options?: SignalOptions<T>): ComputedSignal<T> {
   let _signal: Signal<T>;
 
   function signal(): Signal<T> {

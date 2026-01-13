@@ -6,6 +6,7 @@ import { assetpackPlugin } from "./plugins";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "/beads/",
   plugins: [
     react(),
     tailwindcss(),
